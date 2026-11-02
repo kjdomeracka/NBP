@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Interaktywny dashboard rynku płatności w Polsce: POS, e-commerce, BLIK i SoftPOS na danych NBP (Q1 2024 – Q4 2025).">
+<meta property="og:title" content="Rynek płatności · Polska · NBP">
+<meta property="og:description" content="Interaktywny dashboard rynku płatności w Polsce: POS, e-commerce, BLIK i SoftPOS na danych NBP (Q1 2024 – Q4 2025).">
+<meta property="og:type" content="website">
+<title>Rynek płatności · Polska · NBP</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --bg:#fff;--bg2:#f5f5f3;--bg3:#ededea;
+  --text:#1a1a18;--text2:#6b6b67;--text3:#9e9e9a;
+  --border:rgba(0,0,0,0.1);
+  --y24:#8BAEC8;--y25:#1F6FB2;--y24b:#B8CDD6;--y25b:#5BBFAA;
+  --success-bg:#EAF3DE;--success-text:#3B6D11;
+  --warning-bg:#FAEEDA;--warning-text:#854F0B;
+  --r-md:8px;--r-lg:12px;
+}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;--text:#f0f0ed;--text2:#a8a8a4;--text3:#6b6b67;--border:rgba(255,255,255,0.1);--success-bg:#173404;--success-text:#C0DD97;--warning-bg:#412402;--warning-text:#FAC775;}}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scrollbar-gutter:stable;overflow-y:scroll}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg3);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+.shell{max-width:1180px;margin:0 auto;padding:0 20px 3rem;display:flex;gap:24px;align-items:flex-start}
+.shell-content{flex:1;min-width:0;max-width:980px}
+.toc{width:190px;flex-shrink:0;position:sticky;top:140px;padding-top:2rem;display:none}
+.toc.show{display:block}
+.toc-group{margin-bottom:4px}
+.toc-tab-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;padding:0 12px 8px;margin-top:12px}
+.toc-tab-label:first-child{margin-top:0}
+.toc-item{display:block;width:100%;text-align:left;font-size:13px;padding:7px 12px;border-left:2px solid transparent;background:transparent;border-top:none;border-right:none;border-bottom:none;color:var(--text3);cursor:pointer;font-family:inherit;line-height:1.4;transition:color .12s,border-color .12s;white-space:nowrap}
+.toc-item:hover{color:var(--text)}
+.toc-item.active{color:var(--text);font-weight:500;border-left-color:var(--y25)}
+header{background:linear-gradient(135deg,#1E293B 0%,#334155 100%);position:static}
+.header-inner{max-width:980px;margin:0 auto;padding:12px 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.header-eyebrow{font-size:10px;color:#7DD3FC;text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:1.5px}
+.header-title{font-size:21px;font-weight:700;color:#F1F5F9;letter-spacing:-.01em;text-transform:uppercase}
+.header-sub{font-size:11px;color:#8B97A8;margin-top:6px}
+.badge{font-size:11px;color:#CBD5E1;background:rgba(125,211,252,0.12);padding:5px 11px;border-radius:6px;white-space:nowrap;border:1px solid rgba(125,211,252,0.25)}
+.nav-wrap{background:var(--bg);border-bottom:.5px solid var(--border);position:sticky;top:0;z-index:99}
+.nav{max-width:980px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{font-size:13px;padding:12px 16px;background:transparent;border:none;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s;font-family:inherit}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--text);border-bottom-color:var(--y25);font-weight:500}
+.pg{display:none;padding-top:2rem}.pg.active{display:block}
+.pg-title{font-size:22px;font-weight:500;color:var(--text);margin-bottom:4px}
+.pg-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.pg-source{font-size:13px;color:var(--text2);margin-top:2px;margin-bottom:1.5rem;line-height:1.6}
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:0.4375rem}
+.kpi{background:var(--bg);border:.5px solid var(--border);border-left:3px solid var(--y25);border-radius:var(--r-md);padding:18px 16px;display:flex;flex-direction:column;min-height:120px}
+.kpi-l{font-size:11px;color:var(--text);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;line-height:1.4;min-height:24px;font-weight:500}
+.kpi-v{font-size:19px;font-weight:500;color:var(--text);line-height:1.1;min-height:22px;display:flex;align-items:baseline;gap:4px;white-space:nowrap}
+.kpi-u{font-size:12px;font-weight:400;color:var(--text3)}
+.kpi-b{font-size:11px;color:var(--text3);opacity:.65;margin-top:4px}
+.kpi-spacer{flex:1}
+.kpi-row{display:flex;align-items:flex-start;gap:36px;flex-wrap:wrap}
+.kpi-row.wide{gap:60px}
+.kpi-m{display:flex;flex-direction:column}
+.kpi-m-l{font-size:10px;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.kpi-m-v{font-size:19px;font-weight:500;color:var(--text);line-height:1.1;white-space:nowrap}
+.kpi-m-d{font-size:11px;font-weight:600;margin-top:4px}
+.kpi-d{font-size:11px;font-weight:600;margin-top:14px;padding-top:10px;border-top:.5px solid var(--border)}
+.pos{color:var(--success-text)}.neg{color:#a32d2d}.neu{color:var(--text3)}
+.sec-label{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;padding-bottom:8px;border-bottom:.5px solid var(--border);margin-top:2.5rem;margin-bottom:1rem}
+.card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--r-lg);padding:16px}
+.card-full{background:var(--bg);border:.5px solid var(--border);border-radius:var(--r-lg);padding:16px;margin-bottom:1.5rem}
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr));gap:14px;margin-bottom:1.75rem}
+.chart-grid-2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-bottom:1.75rem}
+.ct{font-size:13px;font-weight:500;color:var(--text);margin-bottom:12px}
+.cd{font-size:11px;color:var(--text2);margin-bottom:10px}
+.cw{position:relative;width:100%;min-width:0;overflow:hidden}
+.cw canvas{display:block;max-width:100%}
+.card,.card-full,.kpi,.chart-grid-2>*,.bubble-wrap>*,.kpi-strip>*{min-width:0}
+.leg{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;min-height:44px;align-content:flex-start}
+.leg-i{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.waffle{display:grid;grid-template-columns:repeat(10,12px);gap:3px}.waffle i{display:block;width:12px;height:12px;border-radius:2px}
+.year-leg{display:flex;gap:14px;margin-bottom:10px}
+.tog-row{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+.tog{font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;background:var(--bg2);border:.5px solid var(--border);color:var(--text2);font-family:inherit;transition:background .12s,color .12s}
+.tog.on{background:var(--y25);color:#fff;border-color:var(--y25)}
+.ins-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:1.75rem}
+.ins{background:var(--bg);border:.5px solid var(--border);padding:14px 16px;border-left:3px solid;border-radius:0 var(--r-lg) var(--r-lg) 0}
+.ins-ey{font-size:11px;color:var(--text3);margin-bottom:5px}
+.ins-tx{font-size:12px;color:var(--text);line-height:1.6}
+.ins-hi{font-weight:500}
+.brak-box{background:var(--bg2);border-radius:var(--r-lg);padding:2.5rem 2rem;text-align:center;margin-bottom:1.5rem}
+.brak-title{font-size:16px;font-weight:500;color:var(--text);margin-bottom:8px}
+.brak-desc{font-size:13px;color:var(--text2);line-height:1.65;max-width:500px;margin:0 auto}
+.proxy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:1.5rem}
+.proxy-card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--r-lg);padding:14px 16px}
+.proxy-badge{display:inline-block;font-size:10px;background:var(--warning-bg);color:var(--warning-text);padding:2px 7px;border-radius:5px;margin-bottom:7px}
+.proxy-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:4px}
+.proxy-desc{font-size:11px;color:var(--text2);line-height:1.55}
+.src{font-size:11px;color:var(--text3);padding-top:10px;border-top:.5px solid var(--border);margin-top:.5rem}
+.bubble-wrap{display:grid;grid-template-columns:minmax(0,1fr) 148px;gap:14px;align-items:start}
+.atm-stack{display:flex;flex-direction:column;gap:8px;padding-top:28px}
+.atm-top{font-size:11px;font-weight:500;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;padding-bottom:5px;border-bottom:.5px solid var(--border)}
+.mini{border-radius:var(--r-md);padding:10px 12px;border-left:3px solid}
+.mini-l{font-size:10px;color:var(--text2);margin-bottom:3px;line-height:1.3}
+.mini-v{font-size:16px;font-weight:500}
+.mini-s{font-size:10px;color:var(--text3);margin-top:1px}
+footer{text-align:center;font-size:11px;color:var(--text3);padding:2rem 20px 1.5rem;border-top:.5px solid var(--border);margin-top:1rem}
+
+@media(max-width:860px){
+  .sec-label{margin-top:1.75rem}
+  .toc{display:none!important}
+  .shell{padding:0 16px 3rem;gap:0}
+  .nav-wrap{top:0}
+  header{position:static}
+  .header-inner{padding:16px 16px;flex-wrap:wrap}
+  .nav{padding:0 16px}
+  .chart-grid-2{grid-template-columns:minmax(0,1fr)}
+  .bubble-wrap{grid-template-columns:minmax(0,1fr)}
+  .atm-stack{padding-top:8px;flex-direction:column;gap:8px}
+  .atm-stack .mini{width:100%}
+  .kpi-row{gap:24px}
+  .kpi-row.wide{gap:24px}
+  .kpi[style*="grid-column"]{grid-column:1/-1}
+  .kpi-strip[style*="grid-template-columns"]{grid-template-columns:minmax(0,1fr)!important}
+  .header-title{font-size:19px}
+  .badge{font-size:10px}
+  .pg-title{font-size:19px}
+}
+@media(max-width:480px){
+  .nav-btn{padding:10px 12px;font-size:12px}
+  .kpi-l{font-size:10px}
+  .kpi-v{font-size:17px}
+  .kpi-m-v{font-size:17px}
+  .ct{font-size:12.5px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div><div class="header-eyebrow">Product Dashboard</div><div class="header-title">Rynek płatności <span style="font-size:16px;font-weight:400;color:#A7B4C5">· Polska</span></div></div>
+  </div>
+</header>
+<div class="nav-wrap">
+  <nav class="nav">
+    <button class="nav-btn active" onclick="show('heli',this)">Helicopter view</button>
+    <button class="nav-btn" onclick="show('pos',this)">Terminale POS</button>
+    <button class="nav-btn" onclick="show('ecom',this)">E-Commerce</button>
+    <button class="nav-btn" onclick="show('soft',this)">SoftPOS</button>
+  </nav>
+</div>
+
+<div class="shell">
+<nav class="toc show" id="toc">
+  <div class="toc-group" data-tab="heli">
+    <button class="toc-item" onclick="scrollToTop(this)">KPI</button>
+    <button class="toc-item active" onclick="scrollToSec('heli-1',this)">Udział w obrocie</button>
+    <button class="toc-item" onclick="scrollToSec('heli-2',this)">BLIK</button>
+    <button class="toc-item" onclick="scrollToSec('heli-3',this)">Cash vs Cashless</button>
+    <button class="toc-item" onclick="scrollToSec('heli-4',this)">Akceptanci</button>
+    <button class="toc-item" onclick="scrollToSec('heli-5',this)">DCC (Potencjał)</button>
+    <button class="toc-item" onclick="scrollToSec('heli-6',this)">Sygnały produktowe</button>
+  </div>
+  <div class="toc-group" data-tab="pos" style="display:none">
+    <button class="toc-item" onclick="scrollToTop(this)">KPI</button>
+    <button class="toc-item" onclick="scrollToSec('pos-1',this)">Sposoby płatności</button>
+    <button class="toc-item" onclick="scrollToSec('pos-6',this)">DCC (Potencjał)</button>
+    <button class="toc-item" onclick="scrollToSec('pos-5',this)">BLIK</button>
+    <button class="toc-item" onclick="scrollToSec('pos-7',this)">Sygnały produktowe</button>
+  </div>
+  <div class="toc-group" data-tab="ecom" style="display:none">
+    <button class="toc-item" onclick="scrollToTop(this)">KPI</button>
+    <button class="toc-item" onclick="scrollToSec('ecom-1',this)">Sposoby płatności</button>
+    <button class="toc-item" onclick="scrollToSec('ecom-2',this)">Średni koszyk</button>
+    <button class="toc-item" onclick="scrollToSec('ecom-3',this)">Akceptanci</button>
+    <button class="toc-item" onclick="scrollToSec('ecom-4',this)">Sygnały produktowe</button>
+  </div>
+  <div class="toc-group" data-tab="soft" style="display:none">
+    <button class="toc-item" onclick="scrollToTop(this)">KPI</button>
+    <button class="toc-item" onclick="scrollToSec('soft-4',this)">Liczba pobrań</button>
+    <button class="toc-item" onclick="scrollToSec('soft-2',this)">Oceny aplikacji</button>
+    <button class="toc-item" onclick="scrollToSec('soft-3',this)">Liczba terminali</button>
+    <button class="toc-item" onclick="scrollToSec('soft-5',this)">Sygnały produktowe</button>
+  </div>
+</nav>
+<div class="shell-content">
+
+<!-- ═══════════ HELICOPTER VIEW ═══════════ -->
+<div id="heli" class="pg active">
+  <div class="pg-title">Helicopter view</div>
+  <div class="pg-desc">Raport pokazuje zmiany na rynku płatności w obszarach: Terminale POS, E-Commerce i SoftPOS.</div>
+  <div class="pg-source">Źródło: <a href="https://nbp.pl/system-platniczy/dane-i-analizy/" target="_blank" rel="noopener" style="color:var(--y25);text-decoration:underline">Raporty NBP</a> · Dane za: Q1 2024 – Q4 2025</div>
+
+  <div class="kpi-strip" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+    <div class="kpi" style="min-height:auto"><div class="kpi-l">Kanały płatności — Obrót · ALL 2025</div><div class="kpi-row">
+      <div class="kpi-m"><div class="kpi-m-l">POS</div><div class="kpi-m-v main">46,5<span class="kpi-u">%</span></div><div class="kpi-m-d neg">↓ 1,6pp r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">e-commerce</div><div class="kpi-m-v sub">26,0<span class="kpi-u">%</span></div><div class="kpi-m-d pos">↑ 3,2pp r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">Bankomat</div><div class="kpi-m-v sub">27,5<span class="kpi-u">%</span></div><div class="kpi-m-d neg">↓ 1,6pp r/r</div></div>
+    </div></div>
+    <div class="kpi" style="min-height:auto"><div class="kpi-l">Kanały płatności — Wolumen · ALL 2025</div><div class="kpi-row">
+      <div class="kpi-m"><div class="kpi-m-l">POS</div><div class="kpi-m-v main">78,4<span class="kpi-u">%</span></div><div class="kpi-m-d neg">↓ 1,7pp r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">e-commerce</div><div class="kpi-m-v sub">18,7<span class="kpi-u">%</span></div><div class="kpi-m-d pos">↑ 2,1pp r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">Bankomat</div><div class="kpi-m-v sub">2,9<span class="kpi-u">%</span></div><div class="kpi-m-d neg">↓ 0,4pp r/r</div></div>
+    </div></div>
+  </div>
+
+  <div class="sec-label" id="heli-1">Udział kanałów w obrocie · ALL 2025</div>
+  <div class="card-full">
+    <div class="ct" style="margin-bottom:12px">Kanały płatności — Wolumen vs Średni koszyk vs Obrót</div>
+    
+    <div class="bubble-wrap" style="align-items:center">
+      <div>
+        <div class="cw" style="height:320px"><canvas id="bc"></canvas></div>
+      </div>
+      <div class="atm-stack" style="align-self:center;padding-top:0">
+        <div class="atm-top">Śr. koszyk · ALL 2025</div>
+        <div class="mini" style="background:#E8F1F8;border-left-color:#1F6FB2"><div class="mini-l">POS stacjonarny</div><div class="mini-v" style="color:#1F6FB2">67 zł</div><div class="mini-s">vs 66 zł r/r</div></div>
+        <div class="mini" style="background:#E6F5F2;border-left-color:#5BBFAA"><div class="mini-l">E-commerce</div><div class="mini-v" style="color:#0F6E56">157 zł</div><div class="mini-s">vs 150 zł r/r</div></div>
+        <div class="mini" style="background:#FDF3E3;border-left-color:#BA7517"><div class="mini-l">Bankomat</div><div class="mini-v" style="color:#854F0B">1 057 zł</div><div class="mini-s">vs 946 zł r/r</div></div>
+      </div>
+    </div>
+    <div class="leg">
+          <span class="leg-i"><span class="leg-dot" style="background:#8BAEC8"></span>POS 2024</span>
+          <span class="leg-i"><span class="leg-dot" style="background:#1F6FB2"></span>POS 2025</span>
+          <span class="leg-i"><span class="leg-dot" style="background:#9FD6CC"></span>E-commerce 2024</span>
+          <span class="leg-i"><span class="leg-dot" style="background:#5BBFAA"></span>E-commerce 2025</span>
+          <span class="leg-i"><span class="leg-dot" style="background:#C4A882"></span>Bankomat 2024</span>
+          <span class="leg-i"><span class="leg-dot" style="background:#BA7517"></span>Bankomat 2025</span>
+        </div>
+    <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)">Wielkość koła = łączna wartość obrotu · Strzałka: kierunek zmiany 2024 → 2025</div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="card">
+      <div class="ct">Kanały płatności — Udział</div>
+      <div class="tog-row"><button class="tog on" onclick="setHeliMix('val',this)">Obrót</button><button class="tog" onclick="setHeliMix('vol',this)">Wolumen</button></div>
+      <div class="cw" style="height:260px"><canvas id="d-mix"></canvas></div>
+      <div class="leg" id="leg-mix"></div>
+      <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)"><span class="fn-note" id="d-mix-fn"></span></div>
+    </div>
+    <div class="card">
+      <div class="ct">Kanały płatności — Zmiana r/r</div>
+      <div class="tog-row"><button class="tog on" onclick="setHeliYoy('val',this)">Obrót</button><button class="tog" onclick="setHeliYoy('vol',this)">Wolumen</button></div>
+      <div class="cw" style="height:260px"><canvas id="gb-mix"></canvas></div>
+      <div class="leg">
+        <span class="leg-i"><span class="leg-dot" style="background:#8BAEC8"></span>ALL 2024</span>
+        <span class="leg-i"><span class="leg-dot" style="background:#1F6FB2"></span>ALL 2025</span>
+      </div>
+      <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)">% nad słupkiem = zmiana r/r</div>
+    </div>
+  </div>
+  <div class="card-full">
+    <div class="ct">Obrót na placówkę — E-commerce vs POS</div>
+    <div class="chart-grid-2" style="margin-bottom:0;align-items:center">
+      <div>
+        <div style="font-size:52px;font-weight:600;line-height:1;color:var(--text);letter-spacing:-.01em">x4,2</div>
+        <div style="font-size:14px;color:var(--text2);margin-top:10px;line-height:1.5">sklep internetowy generuje ponad 4 razy większy obrót niż sklep stacjonarny</div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:center;align-items:flex-end;gap:8px;height:200px;border-bottom:1px solid var(--border)">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:76px"><span style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;white-space:nowrap">3,15 mln zł</span><div style="width:60px;height:100%;background:#5BBFAA;border-radius:4px 4px 0 0"></div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;width:76px"><span style="font-size:12px;color:var(--text2);margin-bottom:4px;white-space:nowrap">0,75 mln zł</span><div style="width:60px;height:23.9%;background:#1F6FB2;border-radius:4px 4px 0 0"></div></div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:8px;padding-top:6px;font-size:11px;color:var(--text3)"><span style="width:76px;text-align:center">E-commerce</span><span style="width:76px;text-align:center">POS</span></div>
+      </div>
+    </div>
+    <div class="cd" style="margin-top:14px;padding-top:8px;border-top:.5px solid var(--border)">E-commerce: 377,8 mld zł obrotu / 120 tys. sklepów internetowych · POS: 676,6 mld zł obrotu / 897 tys. sklepów stacjonarnych. Obrót za ALL 2025, liczba placówek na koniec Q4 2025. Obrót e-commerce obejmuje CNP i BLIK w internecie.</div>
+  </div>
+
+
+
+  <div class="sec-label" id="heli-2">BLIK · wszystkie kanały</div>
+  <div class="card-full">
+    <div class="ct">BLIK — Kanały płatności</div>
+    <div class="tog-row"><button class="tog on" onclick="setBlikMix('val',this)">Obrót</button><button class="tog" onclick="setBlikMix('vol',this)">Wolumen</button></div>
+    <div class="cw" style="height:280px"><canvas id="h-blik-mix"></canvas></div>
+    <div class="leg" id="h-blik-mix-leg"></div>
+    <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)"><span class="fn-note" id="h-blik-mix-fn"></span></div>
+  </div>
+  <div class="chart-grid-2">
+    <div class="card">
+    <div class="ct">BLIK — Średni koszyk per kanał</div>
+    <div class="cw" style="height:200px"><canvas id="h-blik-koszyk"></canvas></div>
+    <div class="leg">
+      <span class="leg-i"><span style="display:inline-block;width:14px;height:0;border-top:2px solid #7F77DD"></span>P2P</span>
+      <span class="leg-i"><span style="display:inline-block;width:14px;height:0;border-top:2px solid #5BBFAA"></span>Internet</span>
+      <span class="leg-i"><span style="display:inline-block;width:14px;height:0;border-top:2px dashed #1F6FB2"></span>POS (kod + zbliż.)</span>
+      <span class="leg-i"><span style="display:inline-block;width:14px;height:0;border-top:2px dashed #BA7517"></span>Bankomat</span>
+    </div>
+    </div>
+    <div class="card">
+      <div class="ct">BLIK — Sezonowość tygodniowa</div>
+      <div class="cw" style="height:200px"><canvas id="h-blik-week"></canvas></div>
+      <div class="leg">
+        <span class="leg-i"><span class="leg-dot" style="background:#1F6FB2"></span>Dni robocze</span>
+        <span class="leg-i"><span class="leg-dot" style="background:#BA7517"></span>Weekend</span>
+      </div></div>
+  </div>
+
+  <div class="sec-label" id="heli-3">Cash vs Cashless</div>
+  <div class="chart-grid-2">
+    <div class="card">
+      <div class="ct">Cash vs Cashless — Wolumen</div>
+      <div style="font-size:13px;color:var(--text2)">Ze 100 transakcji kartą…</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:2px 0 14px"><span style="font-size:52px;font-weight:600;line-height:1;color:#BA7517">4</span><span style="font-size:15px;color:var(--text)">to gotówka</span></div>
+      <div class="waffle"><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i></div>
+      <div class="leg" style="min-height:0;margin-top:12px">
+        <span class="leg-i"><span class="leg-dot" style="background:#BA7517"></span>Gotówkowe</span>
+        <span class="leg-i"><span class="leg-dot" style="background:#1F6FB2"></span>Bezgotówkowe</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-top:14px">Udział gotówki w liczbie transakcji</div>
+      <div style="display:flex;align-items:flex-end;gap:6px;height:48px;margin-top:8px;border-bottom:1px solid var(--border)"><div title="Q1 '24: 4,8%" style="flex:1;height:100%;background:#BA7517;border-radius:3px 3px 0 0;opacity:0.55"></div><div title="Q2 '24: 4,7%" style="flex:1;height:90%;background:#BA7517;border-radius:3px 3px 0 0;opacity:0.55"></div><div title="Q3 '24: 4,5%" style="flex:1;height:70%;background:#BA7517;border-radius:3px 3px 0 0;opacity:0.55"></div><div title="Q4 '24: 4,5%" style="flex:1;height:70%;background:#BA7517;border-radius:3px 3px 0 0;opacity:0.55"></div><div title="Q1 '25: 4,3%" style="flex:1;height:50%;background:#BA7517;border-radius:3px 3px 0 0;opacity:1"></div><div title="Q2 '25: 4,3%" style="flex:1;height:50%;background:#BA7517;border-radius:3px 3px 0 0;opacity:1"></div><div title="Q3 '25: 4,1%" style="flex:1;height:30%;background:#BA7517;border-radius:3px 3px 0 0;opacity:1"></div><div title="Q4 '25: 4,1%" style="flex:1;height:30%;background:#BA7517;border-radius:3px 3px 0 0;opacity:1"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px"><span>4,8% · Q1 '24</span><span>Q4 '25 · 4,1%</span></div>
+      <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)">Udział liczony dla ALL 2025 · 1 kwadrat = 1% · słupki: kwartały (2024 jaśniejsze)</div>
+    </div>
+    <div class="card">
+      <div class="ct">Cash vs Cashless — Obrót</div>
+      <div style="font-size:13px;color:var(--text2)">…ale ze 100 zł</div>
+      <div style="display:flex;align-items:baseline;gap:8px;margin:2px 0 14px"><span style="font-size:52px;font-weight:600;line-height:1;color:#BA7517">40</span><span style="font-size:15px;color:var(--text)">to gotówka</span></div>
+      <div class="waffle"><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#BA7517"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i><i style="background:#1F6FB2"></i></div>
+      <div class="leg" style="min-height:0;margin-top:12px">
+        <span class="leg-i"><span class="leg-dot" style="background:#BA7517"></span>Gotówkowe</span>
+        <span class="leg-i"><span class="leg-dot" style="background:#1F6FB2"></span>Bezgotówkowe</span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-top:14px">Udział gotówki w wartości transakcji</div>
+      <div style="display:flex;align-items:flex-end;gap:6px;height:48px;margin-top:8px;border-bottom:1px solid var(--border)"><div title="Q1 '24: 41,3%" style="flex:1;height:91%;background:#BA7517;border-radius:3px 3px 0 0;opacity:0.55"></div><div title="Q2 '24: 41,6%" style="flex:1;height:100%;background:#BA7517;border-radius:3px 3px 0 0;opacity:0.55"></div><div title="Q3 '24: 41,1%" style="flex:1;height:85%;background:#BA7517;border-radius:3px 3px 0 0;opacity:0.55"></div><div title="Q4 '24: 40,8%" style="flex:1;height:76%;background:#BA7517;border-radius:3px 3px 0 0;opacity:0.55"></div><div title="Q1 '25: 40,4%" style="flex:1;height:63%;background:#BA7517;border-radius:3px 3px 0 0;opacity:1"></div><div title="Q2 '25: 40,5%" style="flex:1;height:67%;background:#BA7517;border-radius:3px 3px 0 0;opacity:1"></div><div title="Q3 '25: 40,2%" style="flex:1;height:57%;background:#BA7517;border-radius:3px 3px 0 0;opacity:1"></div><div title="Q4 '25: 39,3%" style="flex:1;height:30%;background:#BA7517;border-radius:3px 3px 0 0;opacity:1"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px"><span>41,3% · Q1 '24</span><span>Q4 '25 · 39,3%</span></div>
+      <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)">Udział liczony dla ALL 2025 · 1 kwadrat = 1% · słupki: kwartały (2024 jaśniejsze)</div>
+    </div>
+  </div>
+
+  <div class="sec-label" id="heli-4">Akceptanci</div>
+  <div class="card-full">
+      <div class="ct">Akceptanci internet vs POS — Wolumen</div>
+      <div class="cw" style="height:260px"><canvas id="h-acc-idx"></canvas></div>
+      <div class="leg">
+        <span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #8BAEC8"></span>POS 2024</span>
+        <span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #1F6FB2"></span>POS 2025</span>
+        <span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #B8CDD6"></span>Internet 2024</span>
+        <span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #5BBFAA"></span>Internet 2025</span>
+      </div>
+  </div>
+
+  <div class="sec-label" id="heli-5">DCC (Potencjał) · wszystkie kanały</div>
+  <div class="card-full"><div class="ct">Karty zagraniczne we wszystkich kanałach — Wolumen i Obrót</div><div class="tog-row"><button class="tog on" onclick="setDccScope('suma',this)">Suma</button><button class="tog" onclick="setDccScope('pos',this)">POS</button><button class="tog" onclick="setDccScope('int',this)">Internet</button><button class="tog" onclick="setDccScope('cb',this)">Cash back</button></div><div class="bubble-wrap" style="align-items:center"><div><div class="cw" style="height:320px"><canvas id="h-dcc"></canvas></div></div><div class="atm-stack" id="h-dcc-mini" style="padding-top:0"><div class="atm-top">DCC (Potencjał) · wszystkie kanały</div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Obrót ALL 2025</div><div class="mini-v" style="color:#1F6FB2">61,2 mld zł</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">Obrót ALL 2024</div><div class="mini-v" style="color:#8BAEC8">55,2 mld zł</div></div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Trans. ALL 2025</div><div class="mini-v" style="color:#1F6FB2">481,1 mln</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">Trans. ALL 2024</div><div class="mini-v" style="color:#8BAEC8">417,5 mln</div></div></div></div><div class="leg"><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #8BAEC8"></span>Wolumen 2024 (mln szt.)</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #1F6FB2"></span>Wolumen 2025 (mln szt.)</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #B8CDD6"></span>Obrót 2024 (mld zł)</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #5BBFAA"></span>Obrót 2025 (mld zł)</span></div></div>
+
+  <div class="sec-label" id="heli-6">Sygnały produktowe</div>
+  <div class="ins-grid">
+    <div class="ins" style="border-left-color:#1F6FB2"><div class="ins-ey">E-commerce rośnie 5× szybciej niż POS</div><div class="ins-tx"><span class="ins-hi">CNP +18,6% wolumenu vs POS +3,5%.</span> Każda inwestycja produktowa w kanał online ma wielokrotnie wyższy mnożnik wzrostu.</div></div>
+    <div class="ins" style="border-left-color:#5BBFAA"><div class="ins-ey">BLIK +16,5% — szybszy niż karty debetowe</div><div class="ins-tx"><span class="ins-hi">Średnia transakcja BLIK: 155 zł vs 127 zł debet.</span> Wyższy koszyk sugeruje przesunięcie w górę ścieżki zakupowej.</div></div>
+    <div class="ins" style="border-left-color:#8BAEC8"><div class="ins-ey">Kredyt: wartość rośnie szybciej niż wolumen</div><div class="ins-tx"><span class="ins-hi">+11,7% wartości vs +5,7% liczby transakcji.</span> Koszyk 142 zł vs 127 zł debet — uzasadnienie dla BNPL.</div></div>
+    <div class="ins" style="border-left-color:#BA7517"><div class="ins-ey">Bankomat: wolumen spada, wartość rośnie</div><div class="ins-tx"><span class="ins-hi">−7% liczby wypłat, +3,5% wartości r/r.</span> Średnia wypłata: 1 112 zł — coraz rzadziej, ale coraz więcej na raz.</div></div>
+    <div class="ins" style="border-left-color:#7F77DD"><div class="ins-ey">BLIK to narzędzie dnia roboczego</div><div class="ins-tx"><span class="ins-hi">Rozkład bardzo stabilny w czasie (±1–2pp kw./kw.) — pon–śr najmocniejsze (15–16%), weekend słabszy (sobota 13%, niedziela 11%).</span> Sezonowość tygodniowa niemal niezmienna od dwóch lat.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ TERMINALE POS ═══════════ -->
+<div id="pos" class="pg">
+  <div class="pg-title">Terminale POS</div>
+  <div class="pg-desc">Transakcje realizowane na fizycznych terminalach (Point of Sale) w punktach handlowo-usługowych.</div>
+  <div class="pg-source">Źródło: <a href="https://nbp.pl/system-platniczy/dane-i-analizy/" target="_blank" rel="noopener" style="color:var(--y25);text-decoration:underline">Raporty NBP</a> · Dane za: Q1 2024 – Q4 2025</div>
+  <div class="kpi-strip" style="grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)">
+    <div class="kpi" style="min-height:auto"><div class="kpi-l">Transakcje kartami płatniczymi · ALL 2025</div><div class="kpi-row">
+      <div class="kpi-m"><div class="kpi-m-l">obrót</div><div class="kpi-m-v main">676,6 <span class="kpi-u">mld zł</span></div><div class="kpi-m-d pos">↑ 6,4% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">wolumen</div><div class="kpi-m-v sub">10,10 <span class="kpi-u">mld szt.</span></div><div class="kpi-m-d pos">↑ 4,3% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">średni koszyk</div><div class="kpi-m-v sub">67,0 <span class="kpi-u">zł</span></div><div class="kpi-m-d pos">↑ z 65,7 zł r/r</div></div>
+    </div></div>
+    <div class="kpi" style="min-height:auto"><div class="kpi-l">Infrastruktura · Q4 2025</div><div class="kpi-row">
+      <div class="kpi-m"><div class="kpi-m-l">akceptanci</div><div class="kpi-m-v infra">583 <span class="kpi-u">tys.</span></div><div class="kpi-m-d pos">↑ 2,8% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">terminale</div><div class="kpi-m-v infra">1,41 <span class="kpi-u">mln</span></div><div class="kpi-m-d pos">↑ 2,7% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">terminale / merchant</div><div class="kpi-m-v infra">2,42 <span class="kpi-u">szt.</span></div><div class="kpi-m-d neu">bez zmian r/r</div></div>
+    </div></div>
+  </div>
+  <div class="sec-label" id="pos-1">Udział sposobów płatności</div>
+  <div class="chart-grid-2">
+    <div class="card"><div class="ct">Sposoby płatności — Obrót</div><div class="tog-row"><button class="tog on" onclick="setPosDonut('val','suma',this)">Suma</button><button class="tog" onclick="setPosDonut('val','kraj',this)">W Polsce</button><button class="tog" onclick="setPosDonut('val','zagr',this)">Za granicą</button></div><div class="cw" style="height:260px"><canvas id="pos-dw"></canvas></div><div class="leg" id="pos-dw-leg"></div><div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)"><span class="fn-note" id="pos-dw-fn"></span></div></div>
+    <div class="card"><div class="ct">Sposoby płatności — Wolumen</div><div class="tog-row"><button class="tog on" onclick="setPosDonut('vol','suma',this)">Suma</button><button class="tog" onclick="setPosDonut('vol','kraj',this)">W Polsce</button><button class="tog" onclick="setPosDonut('vol','zagr',this)">Za granicą</button></div><div class="cw" style="height:260px"><canvas id="pos-dv"></canvas></div><div class="leg" id="pos-dv-leg"></div><div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)"><span class="fn-note" id="pos-dv-fn"></span></div></div>
+  </div>
+  <div class="sec-label" id="pos-6">DCC (Potencjał)</div>
+  <div class="card-full"><div class="ct" style="margin-bottom:12px">Karty zagraniczne w terminalach POS — Obrót vs Wolumen</div><div class="bubble-wrap"><div><div class="cw" style="height:250px"><canvas id="p-dcc"></canvas></div><div class="leg"><span class="leg-i"><span class="leg-dot" style="background:#8BAEC8"></span>Obrót 2024</span><span class="leg-i"><span class="leg-dot" style="background:#1F6FB2"></span>Obrót 2025</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #B8CDD6"></span>Wolumen 2024</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #5BBFAA"></span>Wolumen 2025</span></div></div><div class="atm-stack" style="padding-top:0"><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Obrót · ALL 2025</div><div class="mini-v" style="color:#1F6FB2">42,0 mld zł</div><div class="kpi-m-d pos" style="margin-top:2px;font-size:10.5px">↑ 7,0% r/r</div></div><div class="mini" style="background:#E6F5F2;border-left-color:#5BBFAA"><div class="mini-l">Wolumen · ALL 2025</div><div class="mini-v" style="color:#0F6E56">405,9 mln szt.</div><div class="kpi-m-d pos" style="margin-top:2px;font-size:10.5px">↑ 11,8% r/r</div></div><div class="mini" style="background:#FDF3E3;border-left-color:#BA7517"><div class="mini-l">Średni koszyk · ALL 2025</div><div class="mini-v" style="color:#854F0B">103,4 zł</div><div class="kpi-m-d neg" style="margin-top:2px;font-size:10.5px">↓ z 108,1 zł r/r</div></div></div></div><div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)">Karty wydane poza Polską, użyte w polskich terminalach POS — DCC (Potencjał).</div></div>
+  <div class="sec-label" id="pos-5">BLIK</div>
+  <div class="card-full"><div class="ct" style="margin-bottom:12px">BLIK w terminalach POS — Kod vs Zbliżeniowy: Wolumen i Średni koszyk</div><div class="bubble-wrap"><div><div class="cw" style="height:250px"><canvas id="p3"></canvas></div><div class="leg"><span class="leg-i"><span class="leg-dot" style="background:#1F6FB2"></span>Kod — wolumen</span><span class="leg-i"><span class="leg-dot" style="background:#5BBFAA"></span>Zbliżeniowy — wolumen</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #BA7517"></span>Kod — śr. koszyk</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #7F77DD"></span>Zbliżeniowy — śr. koszyk</span></div></div><div class="atm-stack" style="padding-top:0"><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Obrót · ALL 2025</div><div class="mini-v" style="color:#1F6FB2">41,7 mld zł</div><div class="kpi-m-d pos" style="margin-top:2px;font-size:10.5px">↑ 30,4% r/r</div></div><div class="mini" style="background:#E6F5F2;border-left-color:#5BBFAA"><div class="mini-l">Wolumen · ALL 2025</div><div class="mini-v" style="color:#0F6E56">703,2 mln szt.</div><div class="kpi-m-d pos" style="margin-top:2px;font-size:10.5px">↑ 21,9% r/r</div></div><div class="mini" style="background:#FDF3E3;border-left-color:#BA7517"><div class="mini-l">Średni koszyk · ALL 2025</div><div class="mini-v" style="color:#854F0B">58,7 zł</div><div class="kpi-m-d pos" style="margin-top:2px;font-size:10.5px">↑ z 54,5 zł r/r</div></div></div></div></div>
+  <div class="sec-label" id="pos-7">Sygnały produktowe</div>
+  <div class="ins-grid">
+    <div class="ins" style="border-left-color:#1F6FB2"><div class="ins-ey">99,4% terminali akceptuje contactless</div><div class="ins-tx"><span class="ins-hi">Contactless to nowe minimum.</span> Merchant onboardowany w 2025 ma NFC domyślnie.</div></div>
+    <div class="ins" style="border-left-color:#5BBFAA"><div class="ins-ey">BLIK zbliżeniowy: +142% r/r wolumenu Q4</div><div class="ins-tx"><span class="ins-hi">Najszybciej rosnący sub-kanał POS.</span> Płatność telefonem wypycha kartę fizyczną.</div></div>
+    <div class="ins" style="border-left-color:#8BAEC8"><div class="ins-ey">Karty zagraniczne: +37% transakcji Q3 2025</div><div class="ins-tx"><span class="ins-hi">Turystyka inbound widoczna w danych POS.</span> DCC i FX-transparent pricing to realny pain point.</div></div>
+    <div class="ins" style="border-left-color:#BA7517"><div class="ins-ey">Kredyt: wyższy koszyk niż debet</div><div class="ins-tx"><span class="ins-hi">Koszyk kredyt ~138 zł vs debet ~66 zł w POS.</span> Uzasadnienie dla BNPL przy większych zakupach.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ E-COMMERCE ═══════════ -->
+<div id="ecom" class="pg">
+  <div class="pg-title">E-Commerce</div>
+  <div class="pg-desc">Płatności internetowe: transakcje kartą bez jej fizycznej obecności (CNP) oraz BLIK w internecie.</div>
+  <div class="pg-source">Źródło: <a href="https://nbp.pl/system-platniczy/dane-i-analizy/" target="_blank" rel="noopener" style="color:var(--y25);text-decoration:underline">Raporty NBP</a> · Dane za: Q1 2024 – Q4 2025</div>
+  <div class="kpi-strip" style="grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)">
+    <div class="kpi" style="min-height:auto"><div class="kpi-l">Płatności internetowe (CNP + BLIK) · ALL 2025</div><div class="kpi-row">
+      <div class="kpi-m"><div class="kpi-m-l">obrót</div><div class="kpi-m-v main">377,8 <span class="kpi-u">mld zł</span></div><div class="kpi-m-d pos">↑ 25,7% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">wolumen</div><div class="kpi-m-v sub">2,41 <span class="kpi-u">mld szt.</span></div><div class="kpi-m-d pos">↑ 20,0% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">średni koszyk</div><div class="kpi-m-v sub">156,9 <span class="kpi-u">zł</span></div><div class="kpi-m-d pos">↑ z 149,7 zł r/r</div></div>
+    </div></div>
+    <div class="kpi" style="min-height:auto"><div class="kpi-l">Infrastruktura · Q4 2025</div><div class="kpi-row">
+      <div class="kpi-m"><div class="kpi-m-l">akceptanci</div><div class="kpi-m-v infra">77,6 <span class="kpi-u">tys.</span></div><div class="kpi-m-d pos">↑ 31,1% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">sklepy e-com</div><div class="kpi-m-v infra">119,8 <span class="kpi-u">tys.</span></div><div class="kpi-m-d pos">↑ 20,3% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">sklep / merchant</div><div class="kpi-m-v infra">1,54 <span class="kpi-u">szt.</span></div><div class="kpi-m-d neg">↓ z 1,68 r/r</div></div>
+    </div></div>
+  </div>
+  <div class="sec-label" id="ecom-1">Udział sposobów płatności</div>
+  <div class="chart-grid-2">
+    <div class="card"><div class="ct">Sposoby płatności — Obrót</div><div class="cw" style="height:260px"><canvas id="ecom-dw"></canvas></div><div class="leg" id="ecom-dw-leg"></div><div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)"><span class="fn-note" id="ecom-dw-fn"></span></div></div>
+    <div class="card"><div class="ct">Sposoby płatności — Wolumen</div><div class="cw" style="height:260px"><canvas id="ecom-dv"></canvas></div><div class="leg" id="ecom-dv-leg"></div><div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)"><span class="fn-note" id="ecom-dv-fn"></span></div></div>
+  </div>
+  <div class="sec-label" id="ecom-2">Średni koszyk</div>
+  <div class="card-full"><div class="ct">CNP vs BLIK internet — Obrót</div><div class="cw" style="height:210px"><canvas id="e5"></canvas></div><div class="leg"><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #8BAEC8"></span>CNP 2024</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #1F6FB2"></span>CNP 2025</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #B8CDD6"></span>BLIK int. 2024</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #5BBFAA"></span>BLIK int. 2025</span></div></div>
+  <div class="sec-label" id="ecom-3">Akceptanci</div>
+  <div class="card-full"><div class="ct">Akceptanci i placówki — Wolumen</div><div class="bubble-wrap"><div><div class="cw" style="height:220px"><canvas id="e4"></canvas></div><div class="leg"><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #8BAEC8"></span>Akceptanci 2024</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px solid #1F6FB2"></span>Akceptanci 2025</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #B8CDD6"></span>Placówki 2024</span><span class="leg-i"><span style="display:inline-block;width:18px;height:0;border-top:2px dashed #5BBFAA"></span>Placówki 2025</span></div></div><div class="atm-stack"><div class="atm-top">Śr. liczba sklepów e-com / Merchant</div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Śr. 2025</div><div class="mini-v" style="color:#1F6FB2">1,57</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">Śr. 2024</div><div class="mini-v" style="color:#8BAEC8">1,68</div></div></div></div></div>
+  <div class="sec-label" id="ecom-4">Sygnały produktowe</div>
+  <div class="ins-grid">
+    <div class="ins" style="border-left-color:#1F6FB2"><div class="ins-ey">BLIK internet > CNP kartami — od Q4 2024</div><div class="ins-tx"><span class="ins-hi">BLIK jest dominującą metodą e-płatności w Polsce.</span> Produkt budowany "card-first" w checkout traci pozycję domyślną.</div></div>
+    <div class="ins" style="border-left-color:#5BBFAA"><div class="ins-ey">CNP zagraniczny rośnie szybciej niż krajowy</div><div class="ins-tx"><span class="ins-hi">Polacy coraz więcej kupują za granicą online.</span> Transparent FX i ochrona przed DCC to realny pain point.</div></div>
+    <div class="ins" style="border-left-color:#8BAEC8"><div class="ins-ey">Akceptanci internet +31% r/r</div><div class="ins-tx"><span class="ins-hi">Rynek e-merchantów rośnie szybciej niż stacjonarny.</span> Self-serve onboarding i API-first mają bezpośredni wpływ na konwersję.</div></div>
+    <div class="ins" style="border-left-color:#BA7517"><div class="ins-ey">Śr. koszyk BLIK internet: 160 zł i rośnie</div><div class="ins-tx"><span class="ins-hi">Wzrost z 143 zł (Q1 2024) do 160 zł (Q4 2025).</span> Trend wspierający ratalność w checkout.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ SOFTPOS ═══════════ -->
+<div id="soft" class="pg">
+  <div class="pg-title">SoftPOS</div>
+  <div class="pg-desc">Przyjmowanie płatności na smartfonie za pomocą wbudowanego czytnika NFC.</div>
+  <div class="pg-source">Źródło: <a href="https://www.cashless.pl/16510-najwieksi-operatorzy-terminali-platniczych-2024" target="_blank" rel="noopener" style="color:var(--y25);text-decoration:underline">Cashless.pl</a> · <a href="https://play.google.com/store/apps?hl=en" target="_blank" rel="noopener" style="color:var(--y25);text-decoration:underline">Google Play</a> · <a href="https://apps.apple.com/pl" target="_blank" rel="noopener" style="color:var(--y25);text-decoration:underline">App Store</a> · Dane za: różne okresy, brak ujednoliconej daty</div>
+  <div class="kpi-strip" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+    <div class="kpi" style="min-height:auto"><div class="kpi-l">Rynek SoftPOS · 2024</div><div class="kpi-row">
+      <div class="kpi-m"><div class="kpi-m-l">liczba urządzeń</div><div class="kpi-m-v main">≈ 50,4 <span class="kpi-u">tys. szt.</span></div><div class="kpi-m-d pos">↑ 48,3% r/r</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">udział w POS</div><div class="kpi-m-v sub">≈ 3,6 <span class="kpi-u">%</span></div><div class="kpi-m-d neu">vs 1,41 mln POS</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">koncentracja</div><div class="kpi-m-v sub">87 <span class="kpi-u">%</span></div><div class="kpi-m-d neu">top 3 marki</div></div>
+    </div></div>
+    <div class="kpi" style="min-height:auto"><div class="kpi-l">Aplikacje SoftPOS</div><div class="kpi-row">
+      <div class="kpi-m"><div class="kpi-m-l">pobrania (Android)</div><div class="kpi-m-v main">≈ 32 <span class="kpi-u">tys.+</span></div><div class="kpi-m-d neu">progi Google Play</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">ocena ważona</div><div class="kpi-m-v sub">3,1 <span class="kpi-u">★</span></div><div class="kpi-m-d neu">455 ocen</div></div>
+      <div class="kpi-m"><div class="kpi-m-l">dostępność iOS</div><div class="kpi-m-v sub">2 / 7</div><div class="kpi-m-d neu">tylko 2 apki</div></div>
+    </div></div>
+  </div>
+  <div class="sec-label" id="soft-4">Liczba pobrań</div>
+  <div class="card-full">
+    <div class="ct">Pobrania aplikacji — Android</div>
+    <div class="cw" style="height:280px"><canvas id="soft-downloads-chart"></canvas></div>
+    <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)"><span class="fn-sub">Zaokrąglone progi Google Play</span><br>App Store nie publikuje liczby pobrań, więc dane dotyczą tylko Androida.</div>
+  </div>
+
+  <div class="sec-label" id="soft-2">Oceny aplikacji</div>
+  <div class="kpi-strip">
+    <div class="kpi"><div class="kpi-l">Śr. ocena Android (5 apek, łącznie 455 ocen)</div><div class="kpi-v">3,3 <span class="kpi-u">★</span></div><div class="kpi-spacer"></div><div class="kpi-d neu">rozstrzał 2,4–4,3★</div></div>
+    <div class="kpi"><div class="kpi-l">Najlepiej oceniana</div><div class="kpi-v">eService tom</div><div class="kpi-b">4,3★ Android (52 oceny) · 4,4★ iOS (24 oceny)</div><div class="kpi-spacer"></div><div class="kpi-d pos">jedyna z oceną &gt;4★ na obu platformach</div></div>
+    <div class="kpi"><div class="kpi-l">Dostępność na iOS</div><div class="kpi-v">2 / 7</div><div class="kpi-b">Planet Pay POSapp · eService tom</div><div class="kpi-spacer"></div><div class="kpi-d neu">5 z 7 tylko na Android</div></div>
+  </div>
+
+  <div class="chart-grid-2">
+    <div class="card">
+      <div class="ct">Oceny aplikacji — Google Play (Android)</div>
+      <div class="cw" style="height:260px"><canvas id="soft-ratings-android"></canvas></div>
+      <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)">Ocena w gwiazdkach (1–5). Elavon SoftPOS i PepPay: za mało recenzji, Google Play nie pokazuje oceny.</div>
+    </div>
+    <div class="card">
+      <div class="ct">Oceny aplikacji — App Store (iOS)</div>
+      <div class="cw" style="height:260px"><canvas id="soft-ratings-ios"></canvas></div>
+      <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)">Ocena w gwiazdkach (1–5). Tylko 2 z 7 aplikacji są dostępne na iOS.</div>
+    </div>
+  </div>
+
+  <div class="card-full">
+    <div class="ct">Aplikacje SoftPOS dostępne w Polsce — Oceny i Popularność</div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border)">
+          <th style="text-align:left;padding:8px 10px;color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em">Aplikacja</th>
+          <th style="text-align:left;padding:8px 10px;color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em">Operator</th>
+          <th style="text-align:center;padding:8px 10px;color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em">Android — ocena</th>
+          <th style="text-align:center;padding:8px 10px;color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em">Opinie</th>
+          <th style="text-align:center;padding:8px 10px;color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em">Pobrania</th>
+          <th style="text-align:center;padding:8px 10px;color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em">iOS — ocena</th>
+          <th style="text-align:center;padding:8px 10px;color:var(--text2);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em">Oceny iOS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:.5px solid var(--border)"><td style="padding:9px 10px;font-weight:500"><a href="https://play.google.com/store/apps/details?id=com.fdi.softpos&hl=pl" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">PolCard Go</a></td><td style="padding:9px 10px;color:var(--text2)">Polcard / Fiserv</td><td style="padding:9px 10px;text-align:center;font-weight:600;color:var(--y25)">3,5 ★</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">161</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">10 tys.+</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">— (brak na iOS)</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">—</td></tr>
+        <tr style="border-bottom:.5px solid var(--border)"><td style="padding:9px 10px;font-weight:500"><a href="https://apps.apple.com/pl/app/planet-pay-posapp/id6743931377" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Planet Pay POSapp</a></td><td style="padding:9px 10px;color:var(--text2)">ITCARD</td><td style="padding:9px 10px;text-align:center;font-weight:600;color:var(--y25)">2,9 ★</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">56</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">5 tys.+</td><td style="padding:9px 10px;text-align:center;font-weight:600;color:var(--y25)">5,0 ★</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">3</td></tr>
+        <tr style="border-bottom:.5px solid var(--border)"><td style="padding:9px 10px;font-weight:500"><a href="https://play.google.com/store/apps/details?id=eu.softpos.softposwrapper.ingpl" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">ING eTerminal</a></td><td style="padding:9px 10px;color:var(--text2)">ING Bank Śląski</td><td style="padding:9px 10px;text-align:center;font-weight:600;color:var(--y25)">2,4 ★</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">169</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">10 tys.+</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">— (brak na iOS)</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">—</td></tr>
+        <tr style="border-bottom:.5px solid var(--border)"><td style="padding:9px 10px;font-weight:500"><a href="https://play.google.com/store/apps/details?id=com.provisionpay.softpos.paytelpl" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">PayTel LightPOS</a></td><td style="padding:9px 10px;color:var(--text2)">PayTel</td><td style="padding:9px 10px;text-align:center;font-weight:600;color:var(--y25)">3,4 ★</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">17</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">1 tys.+</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">— (brak na iOS)</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">—</td></tr>
+        <tr style="border-bottom:.5px solid var(--border);background:rgba(91,191,170,0.06)"><td style="padding:9px 10px;font-weight:500"><a href="https://apps.apple.com/pl/app/eservice-tom/id6739542294" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">eService tom</a></td><td style="padding:9px 10px;color:var(--text2)">eService (Global Payments)</td><td style="padding:9px 10px;text-align:center;font-weight:600;color:var(--y25b)">4,3 ★</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">52</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">5 tys.+</td><td style="padding:9px 10px;text-align:center;font-weight:600;color:var(--y25b)">4,4 ★</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">24</td></tr>
+        <tr style="border-bottom:.5px solid var(--border)"><td style="padding:9px 10px;font-weight:500"><a href="https://play.google.com/store/apps/details?id=com.elavon.eu.mpoc&hl=pl" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">Elavon SoftPOS</a></td><td style="padding:9px 10px;color:var(--text2)">Elavon (U.S. Bank)</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">b.d.*</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">0</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">100+</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">—</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">—</td></tr>
+        <tr><td style="padding:9px 10px;font-weight:500"><a href="https://play.google.com/store/apps/details?id=io.softpay.pep" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">PepPay</a></td><td style="padding:9px 10px;color:var(--text2)">Polskie ePłatności</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">b.d.*</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">0</td><td style="padding:9px 10px;text-align:center;color:var(--text2)">1 tys.+</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">— (brak na iOS)</td><td style="padding:9px 10px;text-align:center;color:var(--text3)">—</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)">Dane pobrane ręcznie ze sklepów Google Play i App Store, stan na czerwiec 2026. * b.d. — Google Play nie wyświetla oceny, gdy liczba recenzji jest zbyt niska (zwykle &lt;5). Obie aplikacje mają bardzo małą bazę pobrań w stosunku do pozostałych.</div>
+  </div>
+
+  <div class="sec-label" id="soft-3">Liczba terminali SoftPOS · 2022–2024</div>
+  <div class="card-full">
+    <div class="ct">Liczba terminali SoftPOS per marka</div>
+    <div class="cw" style="height:280px"><canvas id="soft-terminals-chart"></canvas></div>
+    <div class="leg" id="soft-terminals-leg"></div>
+    <div class="cd" style="margin-top:10px;padding-top:8px;border-top:.5px solid var(--border)"><span class="fn-sub">Szt. · 2022–2024</span><br>Dane niepełne dla części marek — linia przerywa się przy braku danych. Uwaga metodologiczna: liczba marek z dostępnymi danymi rośnie z roku na rok (4 w 2022 → 7 w 2024), więc wzrost sumy łącznej częściowo wynika z rozszerzenia zbioru, nie tylko z organicznego wzrostu istniejących wdrożeń. Wskaźnik r/r w KPI (+48,3%) liczony like-for-like na 5 markach obecnych w 2023 i 2024 (bez PepPay i eService tom), dla rzetelności porównania. Dane za 2025 nie są jeszcze dostępne dla żadnej marki.</div>
+  </div>
+
+  <div class="sec-label" id="soft-5">Sygnały produktowe</div>
+  <div class="ins-grid">
+    <div class="ins" style="border-left-color:#1F6FB2"><div class="ins-ey">SoftPOS to wciąż nisza z dużym zapasem wzrostu</div><div class="ins-tx"><span class="ins-hi">≈ 50 tys. urządzeń SoftPOS wobec 1,41 mln terminali POS — ok. 3,6% rynku.</span> Przy wzroście ×4,6 w dwa lata (4 marki) to naturalny kanał onboardingu mikro-merchantów, dla których klasyczny terminal jest za drogi.</div></div>
+    <div class="ins" style="border-left-color:#5BBFAA"><div class="ins-ey">Jakość aplikacji to realny wyróżnik</div><div class="ins-tx"><span class="ins-hi">Średnia ocena na Androidzie to 3,3★, a najczęściej oceniana aplikacja (ING eTerminal, 169 ocen) ma tylko 2,4★.</span> Stabilność, szybkość płatności i prosty onboarding mogą przesądzić o wyborze dostawcy bardziej niż cena.</div></div>
+    <div class="ins" style="border-left-color:#8BAEC8"><div class="ins-ey">Luka na iOS</div><div class="ins-tx"><span class="ins-hi">Tylko 2 z 7 aplikacji działają na iPhone.</span> Merchanci korzystający z iOS mają bardzo ograniczony wybór — wsparcie obu platform to szansa na przewagę first movera.</div></div>
+    <div class="ins" style="border-left-color:#BA7517"><div class="ins-ey">Dystrybucja wygrywa z produktem</div><div class="ins-tx"><span class="ins-hi">3 marki (Polcard, Planet Pay, ING) mają ok. 87% terminali, a Planet Pay urósł ×10 r/r (1,3 → 13,3 tys.).</span> O skali decyduje dostęp do bazy merchantów acquirera lub banku — samodzielna aplikacja SoftPOS bez kanału sprzedaży ma trudny start.</div></div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<footer>Współtworzone z Copilot &amp; Microsoft 365</footer>
+<script>
+Chart.defaults.resizeDelay=150;
+Chart.defaults.animation.duration=500;
+Chart.defaults.transitions.resize={animation:{duration:0}};
+const dk=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const gc=dk?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.06)';
+const tc='#888780';
+const bx={grid:{display:false},ticks:{font:{size:11},color:tc,maxRotation:0}};
+const by={grid:{color:gc},ticks:{font:{size:11},color:tc}};
+const C={y24:'#8BAEC8',y25:'#1F6FB2',y24b:'#B8CDD6',y25b:'#5BBFAA'};
+const Q8=["Q1 '24","Q2 '24","Q3 '24","Q4 '24","Q1 '25","Q2 '25","Q3 '25","Q4 '25"];
+
+// Dynamically position toc based on actual nav-wrap height (header is no longer sticky)
+(function(){
+  function syncStickyOffsets(){
+    const navWrap=document.querySelector('.nav-wrap');
+    const navH=navWrap?navWrap.getBoundingClientRect().height:42;
+    document.querySelectorAll('.toc').forEach(el=>el.style.top=navH+'px');
+    window._scrollOffset=navH+8;
+  }
+  syncStickyOffsets();
+  window.addEventListener('resize',syncStickyOffsets);
+  window.addEventListener('load',syncStickyOffsets);
+})();
+function show(id,btn){
+  document.querySelectorAll('.pg').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  requestAnimationFrame(()=>{Object.values(Chart.instances).forEach(ch=>{if(ch.canvas&&ch.canvas.offsetParent!==null)ch.resize();});});
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('.toc-group').forEach(g=>{
+    g.style.display = g.dataset.tab===id ? '' : 'none';
+  });
+  const firstItem=document.querySelector(`.toc-group[data-tab="${id}"] .toc-item`);
+  if(firstItem){
+    document.querySelectorAll('.toc-item').forEach(i=>i.classList.remove('active'));
+    firstItem.classList.add('active');
+  }
+}
+function scrollToTop(btn){
+  document.querySelectorAll('.toc-item').forEach(i=>i.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function scrollToSec(secId,btn){
+  document.querySelectorAll('.toc-item').forEach(i=>i.classList.remove('active'));
+  btn.classList.add('active');
+  const el=document.getElementById(secId);
+  if(el){
+    const y=el.getBoundingClientRect().top+window.scrollY-(window._scrollOffset||140);
+    window.scrollTo({top:y,behavior:'smooth'});
+  }
+}
+
+// ── SCROLL SPY ────────────────────────────────────────────────────
+(function(){
+  const secIds=['heli-1','heli-2','heli-3','heli-4','heli-5','heli-6','pos-1','pos-6','pos-5','pos-7','ecom-1','ecom-2','ecom-3','ecom-4','soft-4','soft-2','soft-3','soft-5'];
+  const itemBySec={};
+  document.querySelectorAll('.toc-item').forEach(btn=>{
+    const m=(btn.getAttribute('onclick')||'').match(/scrollToSec\('([^']+)'/);
+    if(m) itemBySec[m[1]]=btn;
+  });
+  let ticking=false;
+  function updateActive(){
+    ticking=false;
+    const activeTab=document.querySelector('.pg.active');
+    if(!activeTab) return;
+    const tabId=activeTab.id;
+    const probeY=(window._scrollOffset||140)+40;
+    let current=null;
+    for(const id of secIds){
+      if(!id.startsWith(tabId+'-')) continue;
+      const el=document.getElementById(id);
+      if(!el) continue;
+      const rect=el.getBoundingClientRect();
+      if(rect.top<=probeY) current=id;
+      else break;
+    }
+    if(window.scrollY<40) current=null;
+    document.querySelectorAll('.toc-item').forEach(i=>i.classList.remove('active'));
+    if(current && itemBySec[current]){
+      itemBySec[current].classList.add('active');
+    } else {
+      const kpiBtn=document.querySelector(`.toc-group[data-tab="${tabId}"] .toc-item`);
+      if(kpiBtn) kpiBtn.classList.add('active');
+    }
+  }
+  window.addEventListener('scroll',()=>{
+    if(!ticking){ticking=true;requestAnimationFrame(updateActive);}
+  },{passive:true});
+})();
+function fmt(n,u){return n.toLocaleString('pl-PL')+' '+u;}
+(function(){
+  let t=null;
+  window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(()=>{Object.values(Chart.instances).forEach(ch=>{if(ch.canvas&&ch.canvas.offsetParent!==null)ch.resize();});},250);});
+})();
+
+// ── DONUT ─────────────────────────────────────────────────────────
+const _dc={};
+function buildDonut(id,legId,labels,raw,colors,unit,koszyk,note,shortLabels){
+  const total=raw.reduce((a,b)=>a+b,0);
+  const sLabels=shortLabels||labels;
+  if(_dc[id]) _dc[id].destroy();
+  const labelPlugin={
+    id:'donutLabels',
+    afterDraw(chart){
+      const {ctx,chartArea}=chart;
+      const meta=chart.getDatasetMeta(0);
+      const cx=(chartArea.left+chartArea.right)/2, cy=(chartArea.top+chartArea.bottom)/2;
+      ctx.save();
+      const slots=meta.data.map((arc,i)=>{
+        const pct=raw[i]/total;
+        const angle=(arc.startAngle+arc.endAngle)/2;
+        const outerR=arc.outerRadius;
+        const goRight=Math.cos(angle)>=0;
+        const elbowR=outerR+22;
+        const x1=cx+Math.cos(angle)*outerR, y1=cy+Math.sin(angle)*outerR;
+        const x2=cx+Math.cos(angle)*elbowR, y2=cy+Math.sin(angle)*elbowR;
+        return {i,pct,col:colors[i],x1,y1,x2,y3:y2,goRight,visible:pct>=0.02};
+      }).filter(s=>s.visible);
+      const lineH=30;
+      const sortedRight=slots.filter(s=>s.goRight).sort((a,b)=>a.y3-b.y3);
+      for(let k=1;k<sortedRight.length;k++){
+        if(sortedRight[k].y3-sortedRight[k-1].y3<lineH) sortedRight[k].y3=sortedRight[k-1].y3+lineH;
+      }
+      const sortedLeft=slots.filter(s=>!s.goRight).sort((a,b)=>a.y3-b.y3);
+      for(let k=1;k<sortedLeft.length;k++){
+        if(sortedLeft[k].y3-sortedLeft[k-1].y3<lineH) sortedLeft[k].y3=sortedLeft[k-1].y3+lineH;
+      }
+      slots.forEach(s=>{
+        const {x1,y1,x2,y3,col,goRight,i,pct}=s;
+        const pctTxt=(pct*100).toFixed(1)+'%';
+        ctx.font='700 13px -apple-system,sans-serif';
+        const pctW=ctx.measureText(pctTxt).width;
+        ctx.font='400 10px -apple-system,sans-serif';
+        const lblW=ctx.measureText(sLabels[i]).width;
+        const tw=Math.max(pctW,lblW);
+        const ax=goRight?x2+4:x2-4-tw;
+        const lineEndX=goRight?ax+tw:ax;
+        ctx.beginPath();
+        ctx.moveTo(x1,y1);ctx.lineTo(x2,y3);ctx.lineTo(lineEndX,y3);
+        ctx.strokeStyle=col;ctx.lineWidth=1;ctx.stroke();
+        ctx.fillStyle=col;ctx.beginPath();ctx.arc(x1,y1,1.8,0,Math.PI*2);ctx.fill();
+        ctx.textAlign='left';
+        ctx.textBaseline='alphabetic';
+        ctx.font='700 13px -apple-system,sans-serif';
+        ctx.fillStyle=dk?'#f0f0ed':'#1a1a18';
+        ctx.fillText(pctTxt,ax,y3-3);
+        ctx.font='400 10px -apple-system,sans-serif';
+        ctx.fillStyle=dk?'#a8a8a4':'#6b6b67';
+        ctx.fillText(sLabels[i],ax,y3+12);
+      });
+      ctx.restore();
+    }
+  };
+  const dPad=ctx=>{const w=ctx.chart.width||0;return w<420?{left:55,right:55,top:28,bottom:28}:{left:95,right:95,top:36,bottom:36};};
+  _dc[id]=new Chart(document.getElementById(id),{
+    type:'doughnut',
+    data:{labels,datasets:[{data:raw,backgroundColor:colors,borderWidth:1.5,borderColor:'rgba(128,128,128,0.15)'}]},
+    plugins:[labelPlugin],
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
+      layout:{padding:dPad},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{
+        const p=((ctx.raw/total)*100).toFixed(1);
+        const lines=[` ${ctx.label}: ${p}% · ${fmt(ctx.raw,unit)}`];
+        if(koszyk) lines.push(` śr. koszyk: ${koszyk[ctx.dataIndex].toLocaleString('pl-PL')} zł`);
+        return lines;
+      }}}}}
+  });
+  if(legId){
+    const el=document.getElementById(legId);
+    el.innerHTML='';
+    labels.forEach((l,i)=>{
+      const p=((raw[i]/total)*100).toFixed(1);
+      el.innerHTML+=`<span class="leg-i"><span class="leg-dot" style="background:${colors[i]}"></span>${l} — ${p}%</span>`;
+    });
+  }
+  {const fn=document.getElementById(id+'-fn');if(fn){const box=fn.parentElement;const hasSub=!!box.querySelector('.fn-sub,[id]:not(.fn-note)');fn.innerHTML=note?(hasSub?'<br>':'')+note:'';box.style.display=box.textContent.trim()?'':'none';}
+  }
+}
+
+// ── BAR HELPERS ───────────────────────────────────────────────────
+function gbPaired(id,d24,d25,raw24,raw25,unit,rawUnit){
+  const labels=[],a24=[],a25=[];
+  for(let q=0;q<4;q++){labels.push("Q"+(q+1)+" '24");labels.push("Q"+(q+1)+" '25");a24.push(d24[q]);a24.push(null);a25.push(null);a25.push(d25[q]);}
+  const t24=raw24.reduce((a,b)=>a+b,0),t25=raw25.reduce((a,b)=>a+b,0);
+  new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[
+    {label:'2024',data:a24,backgroundColor:C.y24,borderRadius:3,borderSkipped:false,categoryPercentage:.8,barPercentage:.9},
+    {label:'2025',data:a25,backgroundColor:C.y25,borderRadius:3,borderSkipped:false,categoryPercentage:.8,barPercentage:.9}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,filter:i=>i.parsed.y!==null,callbacks:{label:c=>{const qi=Math.floor(c.dataIndex/2),yr=c.datasetIndex===0?'24':'25';const raw=yr==='24'?raw24[qi]:raw25[qi],total=yr==='24'?t24:t25;return ` ${c.dataset.label}: ${((raw/total)*100).toFixed(1)}% · ${fmt(raw,rawUnit)}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' '+unit}}}}});
+}
+
+function lineChart(id,datasets){
+  new Chart(document.getElementById(id),{type:'line',data:{labels:Q8,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{x:{...bx},y:{...by}}}});
+}
+
+function yoyBar(id,labels,y24,y25,raw24,raw25,unit,rawUnit){
+  const t24=raw24.reduce((a,b)=>a+b,0),t25=raw25.reduce((a,b)=>a+b,0);
+  const plug={id:'yoy',afterDatasetsDraw(chart){const ctx=chart.ctx;ctx.save();ctx.textAlign='center';const meta=chart.getDatasetMeta(1);const pcts=y24.map((v,i)=>(y25[i]-v)/v*100);const mx=pcts.indexOf(Math.max(...pcts));y24.forEach((_,i)=>{const bar=meta.data[i];if(!bar)return;const pct=pcts[i];ctx.font=i===mx?'600 13px -apple-system,sans-serif':'400 12px -apple-system,sans-serif';ctx.fillStyle=pct>=0?(dk?'#C0DD97':'#3B6D11'):(dk?'#F7C1C1':'#A32D2D');ctx.fillText((pct>=0?'+':'')+pct.toFixed(1).replace('.',',')+'%',bar.x,bar.y-7);});ctx.restore();}};
+  return new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[{label:'ALL 2024',data:y24,backgroundColor:C.y24+'CC',borderRadius:3,borderSkipped:false,categoryPercentage:.65,barPercentage:.92},{label:'ALL 2025',data:y25,backgroundColor:C.y25+'CC',borderRadius:3,borderSkipped:false,categoryPercentage:.65,barPercentage:.92}]},plugins:[plug],options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const i=c.dataIndex,yr=c.datasetIndex===0?'24':'25';const raw=yr==='24'?raw24[i]:raw25[i],total=yr==='24'?t24:t25;return ` ${c.dataset.label}: ${((raw/total)*100).toFixed(1)}% · ${fmt(raw,rawUnit)}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' '+unit}}}}});
+}
+
+// ── DATA ──────────────────────────────────────────────────────────
+const D={
+  posPlVol:{y24:[2137171270,2405409127,2440325803,2337433317],y25:[2231166475,2509963976,2538284194,2410978023]},
+  posZaVol:{y24:[74286803,88374535,109883879,90497522],y25:[78722048,100587738,124256170,102340624]},
+  termRaw:{y24:[1333929,1338361,1364163,1374706],y25:[1345801,1369125,1392186,1412298]},
+  posAccRaw:{y24:[573141,575385,575449,567428],y25:[572357,579524,583233,583091]},
+  blikKodRaw:{y24:[65924888,83905486,84772418,79005261],y25:[81576273,98027389,98092373,91834865]},
+  blikZblizRaw:{y24:[39225627,68970769,79329474,75641516],y25:[72940603,85560228,90372541,84837404]},
+  cashbackRaw:{y24:[6238882,6841068,6646096,6548436],y25:[6165571,6903515,6726742,6532402]},
+  debVal:{y24:[279337675707,307479568356,315623993863,313368559737],y25:[295494343863,331759576225,342243366399,336119671624]},
+  debVol:{y24:[2342281610,2569181786,2641116815,2511544036],y25:[2412727367,2697579867,2773424720,2639479684]},
+  kredVal:{y24:[16321825777,17651847201,18138891725,18347461103],y25:[17597245146,19274655351,20072804814,20496529431]},
+  kredVol:{y24:[127587147,138560909,143924932,136695321],y25:[131058526,144803841,151588955,144543980]},
+  cnpValRaw:{y24:[29168213870,31130694238,32923574562,34600019406],y25:[35237317174,38643426113,41786119901,43137714990]},
+  cnpVolRaw:{y24:[194348319,204213291,211271397,228524847],y25:[226126729,244653105,261922520,271083138]},
+  blikIntValRaw:{y24:[37774356296,41318699848,42933578012,50609657576],y25:[49497187836,52910814659,54217556382,62349790976]},
+  blikIntVolRaw:{y24:[264904634,279569431,289126165,334588166],y25:[325541045,336038935,348663420,393287944]},
+  accUniqRaw:{y24:[54576,56929,58997,59144],y25:[68495,70285,73732,77565]},
+  accPlacRaw:{y24:[92457,96088,98747,99575],y25:[109604,111723,115126,119763]},
+  cashlessVal:[175167092551,191371711937,198171042910,198090908000,187916890911,210293191014,218022285437,217956468663],
+  cashVal:[123060649460,136349220640,138049573145,136408876611,127638865092,143301431986,146734523437,141293705690],
+  cashlessVol:[2364733610,2592803201,2674058247,2543112618,2446911593,2734004985,2817768065,2683782202],
+  cashVol:[119377940,129260429,124855550,120241988,110781457,123179118,120722062,113984829],
+};
+
+// ── HELICOPTER ────────────────────────────────────────────────────
+(function(){
+  const BCHANS=[
+    {name:'POS',c24:'#8BAEC8',c25:'#1F6FB2',d24:{vol:9683382256,koszyk:65.7,val:635902237964},d25:{vol:10096299248,koszyk:67.0,val:676560254271}},
+    {name:'E-commerce',c24:'#9FD6CC',c25:'#5BBFAA',d24:{vol:2006546250,koszyk:149.7,val:300458793808},d25:{vol:2407316836,koszyk:156.9,val:377779928031}},
+    {name:'Bankomat',c24:'#C4A882',c25:'#BA7517',d24:{vol:406392143,koszyk:946.3,val:384560126989},d25:{vol:378630334,koszyk:1056.7,val:400112854188}},
+  ];
+  const MV=Math.max(...BCHANS.flatMap(c=>[c.d24.val,c.d25.val]));
+  const br=v=>5+(v/MV)*34;
+  const bds=[];
+  BCHANS.forEach(ch=>{
+    bds.push({label:ch.name+' 2024',data:[{x:ch.d24.vol/1e6,y:ch.d24.koszyk,r:br(ch.d24.val),_r:ch.d24,_y:2024,_n:ch.name}],backgroundColor:ch.c24+'BB',borderColor:ch.c24,borderWidth:1.5});
+    bds.push({label:ch.name+' 2025',data:[{x:ch.d25.vol/1e6,y:ch.d25.koszyk,r:br(ch.d25.val),_r:ch.d25,_y:2025,_n:ch.name}],backgroundColor:ch.c25+'CC',borderColor:ch.c25,borderWidth:1.5});
+  });
+  new Chart(document.getElementById('bc'),{type:'bubble',data:{datasets:bds},
+    plugins:[{id:'arr',afterDatasetsDraw(chart){
+      const ctx=chart.ctx;ctx.save();ctx.font='500 11px -apple-system,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      BCHANS.forEach((ch,i)=>{
+        const m24=chart.getDatasetMeta(i*2),m25=chart.getDatasetMeta(i*2+1);
+        if(!m24.data[0]||!m25.data[0])return;
+        const p1=m24.data[0],p2=m25.data[0];
+        ctx.fillStyle=dk?'#f0f0ed':'#1a1a18';ctx.fillText(ch.name,p2.x,p2.y-p2.options.radius-9);
+        const dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.sqrt(dx*dx+dy*dy);
+        if(len>2){const ux=dx/len,uy=dy/len;const gap=p1.options.radius+p2.options.radius+4;const ov=len<=gap;const sx=ov?p1.x:p1.x+ux*(p1.options.radius+2),sy=ov?p1.y:p1.y+uy*(p1.options.radius+2);const ex=ov?p2.x:p2.x-ux*(p2.options.radius+2),ey=ov?p2.y:p2.y-uy*(p2.options.radius+2);ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.strokeStyle=dk?'rgba(255,255,255,0.25)':'rgba(0,0,0,0.2)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([]);const angle=Math.atan2(dy,dx);ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-6*Math.cos(angle-0.4),ey-6*Math.sin(angle-0.4));ctx.lineTo(ex-6*Math.cos(angle+0.4),ey-6*Math.sin(angle+0.4));ctx.closePath();ctx.fillStyle=dk?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.3)';ctx.fill();}
+      });ctx.restore();
+    }}],
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:items=>{const p=items[0].raw;return p._n+' · '+p._y;},label:ctx=>{const p=ctx.raw;const tV=BCHANS.reduce((s,c)=>s+(p._y===2024?c.d24.vol:c.d25.vol),0);const tW=BCHANS.reduce((s,c)=>s+(p._y===2024?c.d24.val:c.d25.val),0);return[` Wolumen: ${((p._r.vol/tV)*100).toFixed(1)}% · ${fmt(p._r.vol,'szt.')}`,` Wartość: ${((p._r.val/tW)*100).toFixed(1)}% · ${fmt(p._r.val,'zł')}`,` Śr. koszyk: ${p._r.koszyk.toLocaleString('pl-PL')} zł`];}}}},
+    scales:{x:{title:{display:true,text:'Liczba transakcji (mln)',font:{size:11},color:tc},grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+' mln'}},y:{title:{display:true,text:'Średni koszyk (zł)',font:{size:11},color:tc},grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+' zł'}}}}
+  });
+  const HCOL=['#1F6FB2','#5BBFAA','#BA7517'];
+  const HL=['POS stacjonarny','E-commerce (CNP + BLIK)','Bankomat'];
+  const HLS=['POS','E-commerce','Bankomat'];
+  const MIX={vol:{raw:[10096299248,2407316836,378630334],unit:'szt.',k:null},val:{raw:[676560254271,377779928031,400112854188],unit:'zł',k:[67,157,1057]}};
+  window.setHeliMix=function(kind,btn){
+    if(btn){btn.parentElement.querySelectorAll('.tog').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+    const d=MIX[kind];buildDonut('d-mix','leg-mix',HL,d.raw,HCOL,d.unit,d.k,null,HLS);
+  };
+  setHeliMix('val',null);
+  const BLIK_MIX={L:['Internet','P2P','POS kod','POS zbliżeniowy','Bankomat'],S:['Internet','P2P','Kod','Zbliż.','Bankomat'],C:[C.y25,C.y25b,C.y24,C.y24b,'#BA7517'],
+    val:{raw:[62349790976,33219950965,6916351981,4196378806,15333380748],unit:'zł'},vol:{raw:[393287944,194884345,91834865,84837404,20435109],unit:'szt.'}};
+  window.setBlikMix=function(kind,btn){
+    if(btn){btn.parentElement.querySelectorAll('.tog').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+    const d=BLIK_MIX[kind];buildDonut('h-blik-mix','h-blik-mix-leg',BLIK_MIX.L,d.raw,BLIK_MIX.C,d.unit,null,null,BLIK_MIX.S);
+  };
+  setBlikMix('val',null);
+
+  // BLIK — sezonowość tygodniowa (Q4 2025)
+  (function(){
+    const dni=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
+    const udzial=[16,15,16,15,15,13,11];
+    new Chart(document.getElementById('h-blik-week'),{type:'bar',
+      data:{labels:dni,datasets:[{label:'Udział %',data:udzial,backgroundColor:dni.map((_,i)=>i<5?C.y25:'#BA7517'),borderRadius:4,borderSkipped:false,categoryPercentage:.7,barPercentage:.85}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.y}% liczby transakcji BLIK`}}},
+        scales:{x:{...bx},y:{...by,min:0,max:20,ticks:{...by.ticks,callback:v=>v+'%'}}}}
+    });
+  })();
+
+  // BLIK — średni koszyk per kanał (P2P, Internet, POS, Bankomat)
+  (function(){
+    const p2pVal=[19272053787,22286300781,24750982681,27455920188,27885379456,30786135946,32199524690,33219950965];
+    const p2pVol=[131939104,150720095,152993324,167096826,165955389,186304222,184749220,194884345];
+    const intVal=D.blikIntValRaw.y24.concat(D.blikIntValRaw.y25);
+    const intVol=D.blikIntVolRaw.y24.concat(D.blikIntVolRaw.y25);
+    const kodVal=[4228487389,5195335020,5359444130,5543076233,5630881455,6623306001,6777977087,6916351981];
+    const zblizVal=[1695863539,2947854782,3488707686,3520597279,3359460853,3952745692,4255167237,4196378806];
+    const posVal=kodVal.map((v,i)=>v+zblizVal[i]);
+    const posVol=D.blikKodRaw.y24.concat(D.blikKodRaw.y25).map((v,i)=>v+D.blikZblizRaw.y24.concat(D.blikZblizRaw.y25)[i]);
+    const atmVal=[10935109232,12504853181,13069076391,13133244853,12770940072,14468429803,15191474102,15333380748];
+    const atmVol=[15894152,18090195,18301621,18120419,17574095,20262609,20701524,20435109];
+    const koszyk=(val,vol)=>val.map((v,i)=>Math.round(v/vol[i]));
+    const p2pK=koszyk(p2pVal,p2pVol), intK=koszyk(intVal,intVol), posK=koszyk(posVal,posVol), atmK=koszyk(atmVal,atmVol);
+    const rawVal={p2p:p2pVal,int:intVal,pos:posVal,atm:atmVal};
+    new Chart(document.getElementById('h-blik-koszyk'),{type:'line',data:{labels:Q8,datasets:[
+      {label:'P2P',data:p2pK,borderColor:'#7F77DD',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.3},
+      {label:'Internet',data:intK,borderColor:C.y25b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.3},
+      {label:'POS (kod+zbliż.)',data:posK,borderColor:C.y25,backgroundColor:'transparent',borderWidth:2,pointRadius:3,borderDash:[5,3],tension:.3},
+      {label:'Bankomat',data:atmK,borderColor:'#BA7517',backgroundColor:'transparent',borderWidth:2,pointRadius:3,borderDash:[5,3],tension:.3},
+    ]},options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{
+        const key=['p2p','int','pos','atm'][c.datasetIndex];
+        return ` ${c.dataset.label}: ${c.parsed.y.toLocaleString('pl-PL')} zł/trans. · ${fmt(rawVal[key][c.dataIndex],'zł')}`;
+      }}}},
+      scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' zł'}}}}
+    });
+  })();
+  (function(){
+    const posAcc24=[573141,575385,575449,567428],posAcc25=[572357,579524,583233,583091];
+    const intAcc24=[54576,56929,58997,59144],intAcc25=[68495,70285,73732,77565];
+    const bP=posAcc24[0],bI=intAcc24[0];
+    const pI=[...posAcc24,...posAcc25].map(v=>+(v/bP*100).toFixed(1));
+    const iI=[...intAcc24,...intAcc25].map(v=>+(v/bI*100).toFixed(1));
+    const aP=[...posAcc24,...posAcc25],aI=[...intAcc24,...intAcc25];
+    lineChart('h-acc-idx',[
+      {label:'POS',data:pI,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:pI.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},
+      {label:'Internet',data:iI,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:iI.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3},
+    ]);
+  })();
+  const YOY={vol:[['POS','E-commerce','Bankomat'],[9.68,2.01,0.41],[10.10,2.41,0.38],[9683382256,2006546250,406392143],[10096299248,2407316836,378630334],'mld','szt.'],val:[['POS','E-commerce','Bankomat'],[635.9,300.5,384.6],[676.6,377.8,400.1],[635902237964,300458793808,384560126989],[676560254271,377779928031,400112854188],'mld','zł']};
+  let _gbMix=null;
+  window.setHeliYoy=function(kind,btn){
+    if(btn){btn.parentElement.querySelectorAll('.tog').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+    if(_gbMix){_gbMix.destroy();_gbMix=null;}
+    _gbMix=yoyBar('gb-mix',...YOY[kind]);
+  };
+  setHeliYoy('val',null);
+  // DCC — wszystkie kanały (POS+internet+cashback), karty zagraniczne, z togglem
+  const DCC_D={
+    suma:{val:[11488728657,13468805363,15974827868,14264053900,12239849480,15201576807,17654433390,16137103848],vol:[85584577,101555753,124359431,106040930,93747074,118312098,142884952,126142233],desc:'Potencjał rynku DCC · POS + Internet + Cash back · Q1 2024 – Q4 2025',all25v:'61,2 mld zł',all24v:'55,2 mld zł',all25t:'481,1 mln',all24t:'417,5 mln'},
+    pos:{val:[8029346767,9489292624,11970351035,9748067314,8171896644,10389150549,12924795507,10493819761],vol:[74286803,88374535,109883879,90497522,78722048,100587738,124256170,102340624],desc:'Potencjał rynku DCC · kanał: Terminale POS · Q1 2024 – Q4 2025',all25v:'42,0 mld zł',all24v:'39,2 mld zł',all25t:'405,9 mln',all24t:'363,0 mln'},
+    int:{val:[3457202719,3976843813,4001000076,4512911733,4064710121,4808387807,4723467184,5637175565],vol:[11286154,13166147,14456138,15528729,15011056,17705679,18602460,23780215],desc:'Potencjał rynku DCC · kanał: Internet · Q1 2024 – Q4 2025',all25v:'19,2 mld zł',all24v:'15,9 mld zł',all25t:'75,1 mln',all24t:'54,4 mln'},
+    cb:{val:[2179171,2668927,3476757,3074852,3242716,4038451,6170699,6108521],vol:[11620,15071,19414,14679,13970,18681,26322,21394],desc:'Potencjał rynku DCC · kanał: Cash back (wypłata sklepowa) · Q1 2024 – Q4 2025',all25v:'19,6 mln zł',all24v:'11,4 mln zł',all25t:'80,4 tys.',all24t:'60,8 tys.'}
+  };
+  let _hDccChart=null;
+  function setDccScope(scope,btn){
+    if(btn){btn.parentElement.querySelectorAll('.tog').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+    const d=DCC_D[scope];
+    document.getElementById('h-dcc-mini').innerHTML=`<div class="atm-top">DCC (Potencjał) · wszystkie kanały</div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Obrót ALL 2025</div><div class="mini-v" style="color:#1F6FB2">${d.all25v}</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">Obrót ALL 2024</div><div class="mini-v" style="color:#8BAEC8">${d.all24v}</div></div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Trans. ALL 2025</div><div class="mini-v" style="color:#1F6FB2">${d.all25t}</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">Trans. ALL 2024</div><div class="mini-v" style="color:#8BAEC8">${d.all24t}</div></div>`;
+    if(_hDccChart){_hDccChart.destroy();_hDccChart=null;}
+    const vV=d.vol.map(v=>+(v/1e6).toFixed(scope==='cb'?3:1));
+    const vW=d.val.map(v=>+(v/1e9).toFixed(scope==='cb'?3:1));
+    const volUnit=scope==='cb'?'tys.':'mln', valUnit=scope==='cb'?'mln':'mld';
+    const vVdisp=scope==='cb'?d.vol.map(v=>+(v/1e3).toFixed(1)):vV;
+    const vWdisp=scope==='cb'?d.val.map(v=>+(v/1e6).toFixed(1)):vW;
+    const yMax=scope==='cb'?30:150, yMax2=scope==='cb'?7:18;
+    _hDccChart=new Chart(document.getElementById('h-dcc'),{type:'line',data:{labels:Q8,datasets:[
+      {label:'Wolumen',data:vVdisp,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:vVdisp.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3,yAxisID:'y'},
+      {label:'Obrót',data:vWdisp,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:vWdisp.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3,yAxisID:'y2'}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const i=c.dataIndex;if(c.datasetIndex===0)return ` Wolumen: ${c.parsed.y.toFixed(1)} ${volUnit} · ${fmt(d.vol[i],'szt.')}`;return ` Obrót: ${c.parsed.y.toFixed(1)} ${valUnit} · ${fmt(d.val[i],'zł')}`;}}}},scales:{x:{...bx},y:{...by,min:0,max:yMax,position:'left',ticks:{...by.ticks,callback:v=>v+' '+volUnit}},y2:{min:0,max:yMax2,grid:{display:false},ticks:{font:{size:11},color:tc,callback:v=>v+' '+valUnit},position:'right'}}}});
+  }
+  window.setDccScope=setDccScope;
+  setDccScope('suma',null);
+})();
+
+// ── POS TOGGLE DATA (global) ──────────────────────────────────────
+const POS_D={
+  suma:{vol:{labels:['Karta debetowa','BLIK POS','Karta kredytowa','Karta prepaid','Karta obciążeniowa'],short:['Debet','BLIK','Kredyt','Prepaid','Obciąż.'],raw:[10523211638,703241676,571995302,48134692,7792679],colors:[C.y25,C.y25b,C.y24,C.y24b,'#7F77DD'],koszyk:[124,59,135,144,408],note:''},val:{labels:['Karta debetowa','BLIK POS','Karta kredytowa','Karta prepaid','Karta obciążeniowa'],short:['Debet','BLIK','Kredyt','Prepaid','Obciąż.'],raw:[1305616958111,41712269112,77441234742,6918956661,3180212717],colors:[C.y25,C.y25b,C.y24,C.y24b,'#7F77DD'],koszyk:[124,59,135,144,408],note:''}},
+  kraj:{vol:{labels:['Karta debetowa','BLIK POS','Karta kredytowa','Karta prepaid','Karta obciążeniowa'],short:['Debet','BLIK','Kredyt','Prepaid','Obciąż.'],raw:[9714820279,703241676,499466961,43087563,5916455],colors:[C.y25,C.y25b,C.y24,C.y24b,'#7F77DD'],koszyk:[122,59,116,134,324],note:'Dane za ALL 2025 (suma Q1–Q4) · Karty wydane w Polsce, obejmują też wypłaty gotówki w bankomacie'},val:{labels:['Karta debetowa','BLIK POS','Karta kredytowa','Karta prepaid','Karta obciążeniowa'],short:['Debet','BLIK','Kredyt','Prepaid','Obciąż.'],raw:[1184368860264,41712269112,58054203448,5783065099,1915104474],colors:[C.y25,C.y25b,C.y24,C.y24b,'#7F77DD'],koszyk:[122,59,116,134,324],note:'Dane za ALL 2025 (suma Q1–Q4) · Karty wydane w Polsce, obejmują też wypłaty gotówki w bankomacie'}},
+  zagr:{vol:{labels:['Karta debetowa','Karta kredytowa'],short:['Debet','Kredyt'],raw:[384980728,20925852],colors:[C.y25,C.y24],koszyk:[103,112],note:'Szacunek za ALL 2025 — NBP nie rozbija kart zagranicznych na typ, podział debet/kredyt przybliżony proporcjonalnie wg udziału w rynku krajowym · BLIK nie występuje w transakcjach zagranicznych POS'},val:{labels:['Karta debetowa','Karta kredytowa'],short:['Debet','Kredyt'],raw:[39629105621,2350556840],colors:[C.y25,C.y24],koszyk:[103,112],note:'Szacunek za ALL 2025 — NBP nie rozbija kart zagranicznych na typ, podział debet/kredyt przybliżony proporcjonalnie wg udziału w rynku krajowym · BLIK nie występuje w transakcjach zagranicznych POS'}}
+};
+function setPosDonut(chart,mode,btn){
+  btn.parentElement.querySelectorAll('.tog').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  const d=POS_D[mode][chart],id=chart==='vol'?'pos-dv':'pos-dw';
+  buildDonut(id,id+'-leg',d.labels,d.raw,d.colors,chart==='val'?'zł':'szt.',chart==='val'?d.koszyk:null,d.note||null,d.short);
+}
+
+const ECOM_D={
+  suma:{vol:{labels:['CNP kartami','BLIK internet','BLIK P2P'],short:['CNP','BLIK','P2P'],raw:[271083138,393287944,194884345],colors:[C.y25,C.y25b,'#7F77DD'],koszyk:[159,159,170]},val:{labels:['CNP kartami','BLIK internet','BLIK P2P'],short:['CNP','BLIK','P2P'],raw:[43137714990,62349790976,33219950965],colors:[C.y25,C.y25b,'#7F77DD'],koszyk:[159,159,170]}},
+  kraj:{vol:{labels:['CNP PL','BLIK internet','BLIK P2P'],short:['CNP','BLIK','P2P'],raw:[121469167,393287944,194884345],colors:[C.y25,C.y25b,'#7F77DD'],koszyk:[151,159,170]},val:{labels:['CNP PL','BLIK internet','BLIK P2P'],short:['CNP','BLIK','P2P'],raw:[17320040235,62349790976,33219950965],colors:[C.y25,C.y25b,'#7F77DD'],koszyk:[151,159,170]}},
+  zagr:{vol:{labels:['CNP zagranica'],short:['CNP'],raw:[149613971],colors:[C.y25],koszyk:[607],note:'BLIK (internet i P2P) — brak osobnej pozycji zagranicznej w danych NBP'},val:{labels:['CNP zagranica'],short:['CNP'],raw:[25817674755],colors:[C.y25],koszyk:[607],note:'BLIK (internet i P2P) — brak osobnej pozycji zagranicznej w danych NBP'}}
+};
+function setEcomDonut(chart,mode,btn){
+  btn.parentElement.querySelectorAll('.tog').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  const d=ECOM_D[mode][chart],id='ecom-'+(chart==='vol'?'dv':'dw');
+  buildDonut(id,id+'-leg',d.labels,d.raw,d.colors,chart==='val'?'zł':'szt.',chart==='val'?d.koszyk:null,d.note||null,d.short);
+}
+
+// ── POS CHARTS ────────────────────────────────────────────────────
+buildDonut('pos-dv','pos-dv-leg',POS_D.suma.vol.labels,POS_D.suma.vol.raw,POS_D.suma.vol.colors,'szt.',null,POS_D.suma.vol.note,POS_D.suma.vol.short);
+buildDonut('pos-dw','pos-dw-leg',POS_D.suma.val.labels,POS_D.suma.val.raw,POS_D.suma.val.colors,'zł',POS_D.suma.val.koszyk,POS_D.suma.val.note,POS_D.suma.val.short);
+// BLIK POS — kod vs zbliżeniowy: wolumen (słupki) i średni koszyk (linie), Q1 2024 – Q4 2025
+(function(){
+  const kN=[...D.blikKodRaw.y24,...D.blikKodRaw.y25], zN=[...D.blikZblizRaw.y24,...D.blikZblizRaw.y25];
+  const kV=[4228487389,5195335020,5359444130,5543076233,5630881455,6623306001,6777977087,6916351981];
+  const zV=[1695863539,2947854782,3488707686,3520597279,3359460853,3952745692,4255167237,4196378806];
+  const mn=a=>a.map(v=>+(v/1e6).toFixed(1));
+  const kK=kV.map((v,i)=>+(v/kN[i]).toFixed(1)), zK=zV.map((v,i)=>+(v/zN[i]).toFixed(1));
+  const yr=(c24,c25)=>Q8.map((_,i)=>i<4?c24:c25);
+  const zl=v=>v.toLocaleString('pl-PL',{minimumFractionDigits:1,maximumFractionDigits:1})+' zł';
+  const yoy=(a,i)=>{if(i<4)return '';const p=(a[i]/a[i-4]-1)*100;return ` · ${(p>=0?'+':'')+p.toFixed(1).replace('.',',')}% r/r`;};
+  const yearSplit={id:'yearSplit',afterDraw(chart){
+    const {ctx,chartArea:ca,scales:{x}}=chart;
+    const xm=(x.getPixelForValue(3)+x.getPixelForValue(4))/2;
+    ctx.save();
+    ctx.strokeStyle=dk?'rgba(255,255,255,0.25)':'rgba(0,0,0,0.2)';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(xm,ca.top-14);ctx.lineTo(xm,ca.bottom);ctx.stroke();ctx.setLineDash([]);
+    ctx.font='600 11px -apple-system,sans-serif';ctx.textAlign='center';ctx.textBaseline='bottom';
+    ctx.fillStyle=tc;ctx.fillText('2024',(ca.left+xm)/2,ca.top-4);ctx.fillText('2025',(xm+ca.right)/2,ca.top-4);
+    ctx.restore();
+  }};
+  new Chart(document.getElementById('p3'),{
+    plugins:[yearSplit],
+    data:{labels:Q8,datasets:[
+      {type:'bar',label:'Kod — wolumen',data:mn(kN),backgroundColor:yr(C.y24,C.y25),borderRadius:2,borderSkipped:false,categoryPercentage:.7,barPercentage:.9,yAxisID:'y',order:2},
+      {type:'bar',label:'Zbliżeniowy — wolumen',data:mn(zN),backgroundColor:yr(C.y24b,C.y25b),borderRadius:2,borderSkipped:false,categoryPercentage:.7,barPercentage:.9,yAxisID:'y',order:2},
+      {type:'line',label:'Kod — śr. koszyk',data:kK,borderColor:'#BA7517',backgroundColor:'#BA7517',borderWidth:2,pointRadius:3,tension:.3,yAxisID:'y2',order:1},
+      {type:'line',label:'Zbliżeniowy — śr. koszyk',data:zK,borderColor:'#7F77DD',backgroundColor:'#7F77DD',borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3,yAxisID:'y2',order:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const i=c.dataIndex;
+        if(c.datasetIndex===0) return ` Kod: ${fmt(kN[i],'szt.')}${yoy(kN,i)}`;
+        if(c.datasetIndex===1) return ` Zbliżeniowy: ${fmt(zN[i],'szt.')}${yoy(zN,i)}`;
+        if(c.datasetIndex===2) return ` Śr. koszyk kod: ${zl(kK[i])}`;
+        return ` Śr. koszyk zbliżeniowy: ${zl(zK[i])}`;}}}},
+      scales:{x:{...bx},
+        y:{...by,min:0,position:'left',title:{display:true,text:'Liczba płatności (mln szt.)',font:{size:11},color:tc},ticks:{...by.ticks,callback:v=>v+' mln'}},
+        y2:{min:0,suggestedMax:90,position:'right',grid:{display:false},title:{display:true,text:'Średni koszyk (zł)',font:{size:11},color:tc},ticks:{font:{size:11},color:tc,callback:v=>v+' zł'}}}}
+  });
+})();
+// DCC POS — obrót (słupki) vs wolumen (linie), 2024 vs 2025 per kwartał
+(function(){
+  const Q4L=['Q1','Q2','Q3','Q4'];
+  const val24=[8029346767,9489292624,11970351035,9748067314], val25=[8171896644,10389150549,12924795507,10493819761];
+  const vol24=[74286803,88374535,109883879,90497522],        vol25=[78722048,100587738,124256170,102340624];
+  const bn=a=>a.map(v=>+(v/1e9).toFixed(2)), mn=a=>a.map(v=>+(v/1e6).toFixed(1));
+  const yoy=(a,b,i)=>{const p=(b[i]/a[i]-1)*100;return (p>=0?'+':'')+p.toFixed(1).replace('.',',')+'% r/r';};
+  new Chart(document.getElementById('p-dcc'),{
+    data:{labels:Q4L,datasets:[
+      {type:'bar',label:'Obrót 2024',data:bn(val24),backgroundColor:C.y24,borderRadius:3,borderSkipped:false,categoryPercentage:.6,barPercentage:.9,yAxisID:'y',order:2},
+      {type:'bar',label:'Obrót 2025',data:bn(val25),backgroundColor:C.y25,borderRadius:3,borderSkipped:false,categoryPercentage:.6,barPercentage:.9,yAxisID:'y',order:2},
+      {type:'line',label:'Wolumen 2024',data:mn(vol24),borderColor:C.y24b,backgroundColor:C.y24b,borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3,yAxisID:'y2',order:1},
+      {type:'line',label:'Wolumen 2025',data:mn(vol25),borderColor:C.y25b,backgroundColor:C.y25b,borderWidth:2,pointRadius:3.5,tension:.3,yAxisID:'y2',order:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{
+        title:it=>it[0].label+' · 2024 vs 2025',
+        label:c=>{const i=c.dataIndex;
+          if(c.datasetIndex===0) return ` Obrót 2024: ${fmt(val24[i],'zł')}`;
+          if(c.datasetIndex===1) return ` Obrót 2025: ${fmt(val25[i],'zł')} (${yoy(val24,val25,i)})`;
+          if(c.datasetIndex===2) return ` Wolumen 2024: ${fmt(vol24[i],'szt.')}`;
+          return ` Wolumen 2025: ${fmt(vol25[i],'szt.')} (${yoy(vol24,vol25,i)})`;}}}},
+      scales:{x:{...bx},
+        y:{...by,min:0,suggestedMax:14,position:'left',title:{display:true,text:'Obrót (mld zł)',font:{size:11},color:tc},ticks:{...by.ticks,callback:v=>v+' mld'}},
+        y2:{min:0,suggestedMax:140,position:'right',grid:{display:false},title:{display:true,text:'Wolumen (mln szt.)',font:{size:11},color:tc},ticks:{font:{size:11},color:tc,callback:v=>v+' mln'}}}}
+  });
+})();
+
+// ── ECOM CHARTS ───────────────────────────────────────────────────
+buildDonut('ecom-dv','ecom-dv-leg',ECOM_D.suma.vol.labels,ECOM_D.suma.vol.raw,ECOM_D.suma.vol.colors,'szt.',null,null,ECOM_D.suma.vol.short);
+buildDonut('ecom-dw','ecom-dw-leg',ECOM_D.suma.val.labels,ECOM_D.suma.val.raw,ECOM_D.suma.val.colors,'zł',ECOM_D.suma.val.koszyk,null,ECOM_D.suma.val.short);
+
+(function(){
+  const cK=[...D.cnpValRaw.y24.map((v,i)=>Math.round(v/D.cnpVolRaw.y24[i])),...D.cnpValRaw.y25.map((v,i)=>Math.round(v/D.cnpVolRaw.y25[i]))];
+  const bK=[...D.blikIntValRaw.y24.map((v,i)=>Math.round(v/D.blikIntVolRaw.y24[i])),...D.blikIntValRaw.y25.map((v,i)=>Math.round(v/D.blikIntVolRaw.y25[i]))];
+  const aC=[...D.cnpValRaw.y24,...D.cnpValRaw.y25],aB=[...D.blikIntValRaw.y24,...D.blikIntValRaw.y25];
+  new Chart(document.getElementById('e5'),{type:'line',data:{labels:Q8,datasets:[{label:'CNP',data:cK,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:cK.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},{label:'BLIK int.',data:bK,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:bK.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const raw=c.datasetIndex===0?aC[c.dataIndex]:aB[c.dataIndex];return ` ${c.dataset.label}: ${c.parsed.y.toLocaleString('pl-PL')} zł / trans. · ${fmt(raw,'zł')}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' zł'}}}}});
+})();
+(function(){
+  const aU=[...D.accUniqRaw.y24,...D.accUniqRaw.y25].map(v=>+(v/1e3).toFixed(1));
+  const aP=[...D.accPlacRaw.y24,...D.accPlacRaw.y25].map(v=>+(v/1e3).toFixed(1));
+  const rU=[...D.accUniqRaw.y24,...D.accUniqRaw.y25],rP=[...D.accPlacRaw.y24,...D.accPlacRaw.y25];
+  new Chart(document.getElementById('e4'),{type:'line',data:{labels:Q8,datasets:[{label:'Akceptanci',data:aU,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:aU.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},{label:'Placówki',data:aP,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:aP.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const raw=c.datasetIndex===0?rU[c.dataIndex]:rP[c.dataIndex];const ratio=(rP[c.dataIndex]/rU[c.dataIndex]).toFixed(2);const lines=[` ${c.dataset.label}: ${c.parsed.y.toFixed(1)} tys. · ${fmt(raw,'szt.')}`];if(c.datasetIndex===1)lines.push(` placówki/akceptant: ${ratio}`);return lines;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' tys.'}}}}});
+})();
+
+
+// ── SOFTPOS CHARTS ────────────────────────────────────────────────
+(function(){
+  const labels=['PolCard Go','ING eTerminal','Planet Pay POSapp','eService tom','PayTel LightPOS','Elavon SoftPOS','PepPay'];
+  const data=[10000,10000,5000,5000,1000,100,1000];
+  const colors=[C.y25,C.y25,C.y25b,C.y25b,C.y24,'#BA7517','#BA7517'];
+  new Chart(document.getElementById('soft-downloads-chart'),{
+    type:'bar',
+    data:{labels,datasets:[{data,backgroundColor:colors,borderRadius:4,barThickness:22}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toLocaleString('pl-PL')}+ pobrań`}}},
+      scales:{
+        x:{...bx,grid:{color:gc},ticks:{...bx.ticks,callback:v=>v>=1000?(v/1000)+'k':v}},
+        y:{grid:{display:false},ticks:{font:{size:11},color:tc}}
+      }}
+  });
+})();
+
+// SoftPOS — oceny w sklepach, z przełącznikiem Android/iOS
+const SOFT_RATINGS={
+  android:{labels:['eService tom','PolCard Go','PayTel LightPOS','Planet Pay POSapp','ING eTerminal','Elavon SoftPOS','PepPay'],data:[4.3,3.5,3.4,2.9,2.4,null,null],n:[52,161,17,56,169,0,0]},
+  ios:{labels:['Planet Pay POSapp','eService tom'],data:[5.0,4.4],n:[3,24]}
+};
+const ocen=n=>{const t=n%10,s=n%100;return n+' '+(n===1?'ocena':(t>=2&&t<=4&&!(s>=12&&s<=14))?'oceny':'ocen');};
+function drawSoftRatings(canvasId,d){
+  const colors=d.data.map(v=>v===null?'transparent':(v>=4?C.y25b:v>=3?C.y25:'#a32d2d'));
+  const mxv=Math.max(...d.data.filter(v=>v!==null));
+  const valuePlugin={id:'ratingValue',afterDatasetsDraw(chart){
+    const {ctx}=chart;const meta=chart.getDatasetMeta(0);ctx.save();ctx.textAlign='center';ctx.textBaseline='bottom';
+    meta.data.forEach((bar,i)=>{const v=d.data[i];
+      if(v===null){ctx.font='400 11px -apple-system,sans-serif';ctx.fillStyle=tc;ctx.fillText('b.d.',bar.x,chart.chartArea.bottom-4);return;}
+      ctx.font=v===mxv?'600 13px -apple-system,sans-serif':'400 12px -apple-system,sans-serif';
+      ctx.fillStyle=v===mxv?(dk?'#f0f0ed':'#1a1a18'):tc;
+      ctx.fillText(`${v.toLocaleString('pl-PL',{minimumFractionDigits:1})} ★`,bar.x,bar.y-6);});
+    ctx.restore();}};
+  new Chart(document.getElementById(canvasId),{type:'bar',
+    data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:colors,borderRadius:4,maxBarThickness:32}]},
+    plugins:[valuePlugin],
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:24}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===null?` brak oceny · ${ocen(d.n[c.dataIndex])}`:` ${c.raw.toLocaleString('pl-PL',{minimumFractionDigits:1})} ★ · ${ocen(d.n[c.dataIndex])}`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10.5},color:tc,autoSkip:false,maxRotation:45}},
+        y:{min:0,max:5,grid:{color:gc},ticks:{...by.ticks,stepSize:1,callback:v=>v+'★'}}}}});
+}
+drawSoftRatings('soft-ratings-android',SOFT_RATINGS.android);
+drawSoftRatings('soft-ratings-ios',SOFT_RATINGS.ios);
+
+// SoftPOS — liczba terminali per marka, 2022-2024
+(function(){
+  const years=['2022','2023','2024'];
+  const brands=[
+    {name:'Polcard Go',       data:[5000,19400,19400], color:C.y25},
+    {name:'Planet Pay POSapp',data:[200,1300,13300],   color:C.y25b},
+    {name:'ING eTerminal',    data:[3500,7300,11000],  color:C.y24},
+    {name:'PayTel LightPOS',  data:[null,4000,4200],   color:'#BA7517'},
+    {name:'Elavon SoftPOS',   data:[900,900,900],      color:'#6366F1'},
+    {name:'PepPay',           data:[null,null,600],    color:'#a32d2d'},
+    {name:'eService tom',     data:[null,null,1000],   color:C.y24b},
+  ];
+  new Chart(document.getElementById('soft-terminals-chart'),{
+    type:'line',
+    data:{labels:years,datasets:brands.map(b=>({
+      label:b.name,data:b.data,borderColor:b.color,backgroundColor:'transparent',
+      borderWidth:2,pointRadius:4,pointBackgroundColor:b.color,tension:.2,spanGaps:false
+    }))},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{
+        if(c.raw===null)return ` ${c.dataset.label}: brak danych`;
+        return ` ${c.dataset.label}: ${c.raw.toLocaleString('pl-PL')} szt.`;
+      }}}},
+      scales:{
+        x:{...bx},
+        y:{...by,ticks:{...by.ticks,callback:v=>v>=1000?(v/1000)+'k':v}}
+      }}
+  });
+  const leg=document.getElementById('soft-terminals-leg');
+  leg.innerHTML=brands.map(b=>`<span class="leg-i"><span class="leg-dot" style="background:${b.color}"></span>${b.name}</span>`).join('');
+})();
+</script>
+</body>
+</html>
