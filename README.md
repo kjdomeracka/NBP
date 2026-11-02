@@ -31,4 +31,4 @@ Responsive down to mobile.
 
 ## Author
 
-Product Manager · FinTech & Payments
+Katarzyna Domeracka · Product Manager
