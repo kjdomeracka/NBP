@@ -17,9 +17,17 @@ Interactive dashboard of the Polish payments market, built on National Bank of P
 - [Cashless.pl](https://www.cashless.pl) – SoftPOS terminal counts
 - Google Play / App Store – SoftPOS app ratings and downloads (manually collected)
 
-## Tech
+## Tools
 
-A single self-contained HTML file: vanilla JavaScript + [Chart.js](https://www.chartjs.org/). No build step and no backend. Responsive down to mobile.
+| Tool | Used for |
+|---|---|
+| **Google Sheets** | Cleaning and flattening raw NBP tables into one master dataset |
+| **[Claude](https://claude.ai) (Anthropic)** | AI assistant for building the code, auditing data against the source and iterating on UI/UX |
+| **HTML / CSS / vanilla JavaScript** | The dashboard itself: a single self-contained file with no build step and no backend |
+| **[Chart.js](https://www.chartjs.org/)** | Interactive charts |
+| **GitHub Pages** | Hosting |
+
+Responsive down to mobile.
 
 ## Author
 
