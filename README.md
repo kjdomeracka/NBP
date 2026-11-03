@@ -2,7 +2,7 @@
 
 Interactive dashboard of the Polish payments market, built on National Bank of Poland (NBP) statistics for Q1 2024 – Q4 2025.
 
-**Live demo:** _kjdomeracka.github.io/NBP/_
+**Live demo:** _[kjdomeracka.github.io/NBP/](https://kjdomeracka.github.io/NBP/)_
 
 
 ## Problem
