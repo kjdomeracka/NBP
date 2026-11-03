@@ -4,11 +4,13 @@ Interactive dashboard of the Polish payments market, built on National Bank of P
 
 **Live demo:** _kjdomeracka.github.io/NBP/_
 
+
 ## Problem
 
 The National Bank of Poland (NBP) publishes comprehensive quarterly statistics on the Polish payments market, yet in their raw form they offer limited analytical value.
 
 **The data is spread across several Excel files, split into raw tables with inconsistent structures, and comes with no visual layer.**
+
 
 ## Goal
 
@@ -18,12 +20,14 @@ A **digestible, decision-oriented tool** that helps to:
 - **Spot behavioural shifts**: cash vs. cards vs. BLIK, in-store vs. online, and the rise of SoftPOS
 - **Draw conclusions**: turn data into **opportunities** and input for **product and go-to-market strategy**
 
+
 ## Challenges
 
 - **Fragmented data.** Inconsistent NBP tables consolidated in Google Sheets into one master dataset.
 - **Gaps in official statistics.** NBP does not track SoftPOS separately, so the segment was built from Cashless.pl terminal counts and app store data, with like-for-like year-over-year growth.
 - **Data accuracy.** An audit against the master dataset caught and fixed errors in totals, growth rates and foreign card figures.
 - **Depth vs. readability.** Redundant charts removed, metrics grouped into compact KPI tiles, navigation and mobile layout added.
+
 
 ## What's inside
 
@@ -36,10 +40,12 @@ _The dashboard interface is in Polish. It is responsive and works on mobile._
 
 Each tab closes with **product signals**: short takeaways that translate the numbers into opportunities.
 
+
 ## Data sources
 
 - [NBP – payment system statistics](https://nbp.pl)
-- Cashless.pl, Google Play / App Store
+- Cashless.pl, Google Play, App Store
+
 
 ## Tools
 
@@ -50,6 +56,7 @@ Each tab closes with **product signals**: short takeaways that translate the num
 | **HTML / CSS / vanilla JavaScript** | The dashboard itself: a single self-contained file with no build step and no backend |
 | **Chart.js** | Interactive charts |
 | **GitHub Pages** | Hosting |
+
 
 ## Author
 
