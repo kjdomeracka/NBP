@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Interaktywny dashboard rynku płatności w Polsce: POS, e-commerce, BLIK i SoftPOS na danych NBP (Q1 2024 – Q4 2025).">
-<meta property="og:title" content="Rynek płatności · Polska · NBP">
-<meta property="og:description" content="Interaktywny dashboard rynku płatności w Polsce: POS, e-commerce, BLIK i SoftPOS na danych NBP (Q1 2024 – Q4 2025).">
+<meta name="description" content="Interactive dashboard of the Polish payments market: POS, e-commerce, BLIK and SoftPOS, based on NBP data (Q1 2024 – Q4 2025).">
+<meta property="og:title" content="Payments Market · Poland · NBP">
+<meta property="og:description" content="Interactive dashboard of the Polish payments market: POS, e-commerce, BLIK and SoftPOS, based on NBP data (Q1 2024 – Q4 2025).">
 <meta property="og:type" content="website">
-<title>Rynek płatności · Polska · NBP</title>
+<title>Payments Market · Poland · NBP</title>
+<script>document.documentElement.classList.add('i18n-wait');setTimeout(function(){document.documentElement.classList.remove('i18n-wait')},2000);</script>
+<style>.i18n-wait body{visibility:hidden}</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root{
@@ -34,7 +36,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
 .toc-item:hover{color:var(--text)}
 .toc-item.active{color:var(--text);font-weight:500;border-left-color:var(--y25)}
 header{background:linear-gradient(135deg,#1E293B 0%,#334155 100%);position:static}
-.header-inner{max-width:980px;margin:0 auto;padding:12px 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.header-inner{max-width:980px;margin:0 auto;padding:12px 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:nowrap}
+.header-inner>div:first-child{min-width:0}
+.lang-sw{display:flex;gap:2px;padding:2px;border-radius:7px;border:1px solid rgba(125,211,252,0.25);background:rgba(125,211,252,0.06);align-self:center;flex-shrink:0}
+.lang-sw button{font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.06em;padding:4px 9px;border:none;border-radius:5px;background:transparent;color:#8B97A8;cursor:pointer;transition:background .12s,color .12s}
+.lang-sw button:hover{color:#F1F5F9}
+.lang-sw button.on{background:rgba(125,211,252,0.18);color:#F1F5F9}
+.lang-sw button:focus-visible{outline:2px solid #7DD3FC;outline-offset:1px}
 .header-eyebrow{font-size:10px;color:#7DD3FC;text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:1.5px}
 .header-title{font-size:21px;font-weight:700;color:#F1F5F9;letter-spacing:-.01em;text-transform:uppercase}
 .header-sub{font-size:11px;color:#8B97A8;margin-top:6px}
@@ -103,7 +111,9 @@ header{background:linear-gradient(135deg,#1E293B 0%,#334155 100%);position:stati
 .mini-l{font-size:10px;color:var(--text2);margin-bottom:3px;line-height:1.3}
 .mini-v{font-size:16px;font-weight:500}
 .mini-s{font-size:10px;color:var(--text3);margin-top:1px}
-footer{text-align:center;font-size:11px;color:var(--text3);padding:2rem 20px 1.5rem;border-top:.5px solid var(--border);margin-top:1rem}
+footer{text-align:center;font-size:11px;line-height:1.7;color:var(--text3);padding:2rem 20px 1.5rem;border-top:.5px solid var(--border);margin-top:1rem}
+.ft-author{margin-bottom:2rem}
+.ft-author strong{font-weight:500}
 
 @media(max-width:860px){
   .sec-label{margin-top:1.75rem}
@@ -111,7 +121,7 @@ footer{text-align:center;font-size:11px;color:var(--text3);padding:2rem 20px 1.5
   .shell{padding:0 16px 3rem;gap:0}
   .nav-wrap{top:0}
   header{position:static}
-  .header-inner{padding:16px 16px;flex-wrap:wrap}
+  .header-inner{padding:16px 16px;flex-wrap:nowrap}
   .nav{padding:0 16px}
   .chart-grid-2{grid-template-columns:minmax(0,1fr)}
   .bubble-wrap{grid-template-columns:minmax(0,1fr)}
@@ -126,6 +136,9 @@ footer{text-align:center;font-size:11px;color:var(--text3);padding:2rem 20px 1.5
   .pg-title{font-size:19px}
 }
 @media(max-width:480px){
+  .header-title{font-size:17px}
+  .header-title span{font-size:14px!important;white-space:nowrap}
+  .lang-sw button{padding:4px 7px}
   .nav-btn{padding:10px 12px;font-size:12px}
   .kpi-l{font-size:10px}
   .kpi-v{font-size:17px}
@@ -138,6 +151,7 @@ footer{text-align:center;font-size:11px;color:var(--text3);padding:2rem 20px 1.5
 <header>
   <div class="header-inner">
     <div><div class="header-eyebrow">Product Dashboard</div><div class="header-title">Rynek płatności <span style="font-size:16px;font-weight:400;color:#A7B4C5">· Polska</span></div></div>
+    <div class="lang-sw" role="group" aria-label="Language / Język"><button type="button" data-lang="en" onclick="setLang('en')">EN</button><button type="button" data-lang="pl" onclick="setLang('pl')">PL</button></div>
   </div>
 </header>
 <div class="nav-wrap">
@@ -516,9 +530,63 @@ footer{text-align:center;font-size:11px;color:var(--text3);padding:2rem 20px 1.5
 </div>
 </div>
 
-<footer>Współtworzone z Copilot &amp; Microsoft 365</footer>
+<footer>
+<div class="ft-author"><strong>Katarzyna Domeracka</strong> — przygotowanie danych, analiza, dobór metryk, wnioski produktowe</div>
+<div>Dane: NBP, Cashless.pl, Google Play, App Store</div>
+<div>Narzędzia: Claude (Anthropic), ChatGPT (OpenAI), Google Sheets</div>
+</footer>
+<script>
+var LANG='en',LOC='en-US',DS='.';
+(function(){try{var s=localStorage.getItem('dash-lang');if(s==='pl'||s==='en')LANG=s;}catch(e){}})();
+const I18N={"Rynek płatności": "Payments market", "· Polska": "· Poland", "Terminale POS": "POS terminals", "Udział w obrocie": "Share of value", "Akceptanci": "Merchants", "DCC (Potencjał)": "DCC (Potential)", "Sygnały produktowe": "Product signals", "Sposoby płatności": "Payment methods", "Średni koszyk": "Average ticket", "Liczba pobrań": "Downloads", "Oceny aplikacji": "App ratings", "Liczba terminali": "Terminal count", "Raport pokazuje zmiany na rynku płatności w obszarach: Terminale POS, E-Commerce i SoftPOS.": "The report tracks changes in the payments market across three areas: POS terminals, e-commerce and SoftPOS.", "Źródło:": "Source:", "Raporty NBP": "NBP reports", "· Dane za: Q1 2024 – Q4 2025": "· Data period: Q1 2024 – Q4 2025", "Kanały płatności — Obrót · ALL 2025": "Payment channels — Value · FY 2025", "Bankomat": "ATM", "Kanały płatności — Wolumen · ALL 2025": "Payment channels — Volume · FY 2025", "Udział kanałów w obrocie · ALL 2025": "Channel share of value · FY 2025", "Kanały płatności — Wolumen vs Średni koszyk vs Obrót": "Payment channels — Volume vs Average ticket vs Value", "Śr. koszyk · ALL 2025": "Avg. ticket · FY 2025", "POS stacjonarny": "In-store POS", "Bankomat 2024": "ATM 2024", "Bankomat 2025": "ATM 2025", "Wielkość koła = łączna wartość obrotu · Strzałka: kierunek zmiany 2024 → 2025": "Bubble size = total transaction value · Arrow: direction of change 2024 → 2025", "Kanały płatności — Udział": "Payment channels — Share", "Obrót": "Value", "Wolumen": "Volume", "Kanały płatności — Zmiana r/r": "Payment channels — YoY change", "% nad słupkiem = zmiana r/r": "% above bar = YoY change", "Obrót na placówkę — E-commerce vs POS": "Value per outlet — E-commerce vs POS", "sklep internetowy generuje ponad 4 razy większy obrót niż sklep stacjonarny": "an online store generates more than 4 times the value of a brick-and-mortar store", "E-commerce: 377,8 mld zł obrotu / 120 tys. sklepów internetowych · POS: 676,6 mld zł obrotu / 897 tys. sklepów stacjonarnych. Obrót za ALL 2025, liczba placówek na koniec Q4 2025. Obrót e-commerce obejmuje CNP i BLIK w internecie.": "E-commerce: 377.8bn PLN in value / 120k online stores · POS: 676.6bn PLN in value / 897k brick-and-mortar stores. Value for FY 2025, outlet count at the end of Q4 2025. E-commerce value includes CNP and BLIK online.", "BLIK · wszystkie kanały": "BLIK · all channels", "BLIK — Kanały płatności": "BLIK — Payment channels", "BLIK — Średni koszyk per kanał": "BLIK — Average ticket by channel", "Internet": "Online", "POS (kod + zbliż.)": "POS (code + contactless)", "BLIK — Sezonowość tygodniowa": "BLIK — Weekly seasonality", "Dni robocze": "Weekdays", "Cash vs Cashless — Wolumen": "Cash vs Cashless — Volume", "Ze 100 transakcji kartą…": "Out of 100 card transactions…", "to gotówka": "are cash", "Gotówkowe": "Cash", "Bezgotówkowe": "Cashless", "Udział gotówki w liczbie transakcji": "Cash share of transaction count", "Udział liczony dla ALL 2025 · 1 kwadrat = 1% · słupki: kwartały (2024 jaśniejsze)": "Share calculated for FY 2025 · 1 square = 1% · bars: quarters (2024 lighter)", "Cash vs Cashless — Obrót": "Cash vs Cashless — Value", "…ale ze 100 zł": "…but out of 100 PLN", "Udział gotówki w wartości transakcji": "Cash share of transaction value", "Akceptanci internet vs POS — Wolumen": "Online vs POS merchants — Volume", "Internet 2024": "Online 2024", "Internet 2025": "Online 2025", "DCC (Potencjał) · wszystkie kanały": "DCC (Potential) · all channels", "Karty zagraniczne we wszystkich kanałach — Wolumen i Obrót": "Foreign cards across all channels — Volume and Value", "Suma": "Total", "Obrót ALL 2025": "Value FY 2025", "Obrót ALL 2024": "Value FY 2024", "Trans. ALL 2025": "Txns FY 2025", "Trans. ALL 2024": "Txns FY 2024", "Wolumen 2024 (mln szt.)": "Volume 2024 (M txns)", "Wolumen 2025 (mln szt.)": "Volume 2025 (M txns)", "Obrót 2024 (mld zł)": "Value 2024 (bn PLN)", "Obrót 2025 (mld zł)": "Value 2025 (bn PLN)", "E-commerce rośnie 5× szybciej niż POS": "E-commerce grows 5× faster than POS", "CNP +18,6% wolumenu vs POS +3,5%.": "CNP +18.6% in volume vs POS +3.5%.", "Każda inwestycja produktowa w kanał online ma wielokrotnie wyższy mnożnik wzrostu.": "Any product investment in the online channel has a far higher growth multiplier.", "BLIK +16,5% — szybszy niż karty debetowe": "BLIK +16.5% — faster than debit cards", "Średnia transakcja BLIK: 155 zł vs 127 zł debet.": "Average BLIK transaction: 155 PLN vs 127 PLN for debit.", "Wyższy koszyk sugeruje przesunięcie w górę ścieżki zakupowej.": "A higher ticket suggests a shift up the purchase funnel.", "Kredyt: wartość rośnie szybciej niż wolumen": "Credit: value grows faster than volume", "+11,7% wartości vs +5,7% liczby transakcji.": "+11.7% in value vs +5.7% in transaction count.", "Koszyk 142 zł vs 127 zł debet — uzasadnienie dla BNPL.": "Ticket of 142 PLN vs 127 PLN for debit — a case for BNPL.", "Bankomat: wolumen spada, wartość rośnie": "ATM: volume falls, value rises", "−7% liczby wypłat, +3,5% wartości r/r.": "−7% in withdrawals, +3.5% in value YoY.", "Średnia wypłata: 1 112 zł — coraz rzadziej, ale coraz więcej na raz.": "Average withdrawal: 1,112 PLN — less often, but more at a time.", "BLIK to narzędzie dnia roboczego": "BLIK is a weekday tool", "Rozkład bardzo stabilny w czasie (±1–2pp kw./kw.) — pon–śr najmocniejsze (15–16%), weekend słabszy (sobota 13%, niedziela 11%).": "The distribution is very stable over time (±1–2pp QoQ) — Mon–Wed are the strongest (15–16%), the weekend is weaker (Saturday 13%, Sunday 11%).", "Sezonowość tygodniowa niemal niezmienna od dwóch lat.": "Weekly seasonality has barely changed in two years.", "Transakcje realizowane na fizycznych terminalach (Point of Sale) w punktach handlowo-usługowych.": "Transactions made on physical terminals (Point of Sale) at retail and service outlets.", "Transakcje kartami płatniczymi · ALL 2025": "Payment card transactions · FY 2025", "obrót": "value", "mld zł": "bn PLN", "wolumen": "volume", "mld szt.": "bn txns", "średni koszyk": "avg. ticket", "zł": "PLN", "Infrastruktura · Q4 2025": "Infrastructure · Q4 2025", "akceptanci": "merchants", "tys.": "k", "terminale": "terminals", "mln": "M", "terminale / merchant": "terminals / merchant", "szt.": "", "bez zmian r/r": "flat YoY", "Udział sposobów płatności": "Payment method share", "Sposoby płatności — Obrót": "Payment methods — Value", "W Polsce": "Domestic", "Za granicą": "Foreign", "Sposoby płatności — Wolumen": "Payment methods — Volume", "Karty zagraniczne w terminalach POS — Obrót vs Wolumen": "Foreign cards at POS terminals — Value vs Volume", "Obrót 2024": "Value 2024", "Obrót 2025": "Value 2025", "Wolumen 2024": "Volume 2024", "Wolumen 2025": "Volume 2025", "Obrót · ALL 2025": "Value · FY 2025", "Wolumen · ALL 2025": "Volume · FY 2025", "Średni koszyk · ALL 2025": "Avg. ticket · FY 2025", "Karty wydane poza Polską, użyte w polskich terminalach POS — DCC (Potencjał).": "Cards issued outside Poland and used at Polish POS terminals — DCC (Potential).", "BLIK w terminalach POS — Kod vs Zbliżeniowy: Wolumen i Średni koszyk": "BLIK at POS terminals — Code vs Contactless: Volume and Average ticket", "Kod — wolumen": "Code — volume", "Zbliżeniowy — wolumen": "Contactless — volume", "Kod — śr. koszyk": "Code — avg. ticket", "Zbliżeniowy — śr. koszyk": "Contactless — avg. ticket", "99,4% terminali akceptuje contactless": "99.4% of terminals accept contactless", "Contactless to nowe minimum.": "Contactless is the new baseline.", "Merchant onboardowany w 2025 ma NFC domyślnie.": "A merchant onboarded in 2025 gets NFC by default.", "BLIK zbliżeniowy: +142% r/r wolumenu Q4": "Contactless BLIK: +142% YoY volume in Q4", "Najszybciej rosnący sub-kanał POS.": "The fastest-growing POS sub-channel.", "Płatność telefonem wypycha kartę fizyczną.": "Phone payments are pushing out the physical card.", "Karty zagraniczne: +37% transakcji Q3 2025": "Foreign cards: +37% transactions in Q3 2025", "Turystyka inbound widoczna w danych POS.": "Inbound tourism shows up in POS data.", "DCC i FX-transparent pricing to realny pain point.": "DCC and FX-transparent pricing are a real pain point.", "Kredyt: wyższy koszyk niż debet": "Credit: higher ticket than debit", "Koszyk kredyt ~138 zł vs debet ~66 zł w POS.": "Credit ticket ~138 PLN vs debit ~66 PLN at POS.", "Uzasadnienie dla BNPL przy większych zakupach.": "A case for BNPL on larger purchases.", "Płatności internetowe: transakcje kartą bez jej fizycznej obecności (CNP) oraz BLIK w internecie.": "Online payments: card-not-present (CNP) transactions and BLIK online.", "Płatności internetowe (CNP + BLIK) · ALL 2025": "Online payments (CNP + BLIK) · FY 2025", "sklepy e-com": "e-com stores", "sklep / merchant": "stores / merchant", "CNP vs BLIK internet — Obrót": "CNP vs BLIK online — Value", "BLIK int. 2024": "BLIK online 2024", "BLIK int. 2025": "BLIK online 2025", "Akceptanci i placówki — Wolumen": "Merchants and outlets — Volume", "Akceptanci 2024": "Merchants 2024", "Akceptanci 2025": "Merchants 2025", "Placówki 2024": "Outlets 2024", "Placówki 2025": "Outlets 2025", "Śr. liczba sklepów e-com / Merchant": "Avg. e-com stores per merchant", "Śr. 2025": "Avg. 2025", "Śr. 2024": "Avg. 2024", "BLIK internet > CNP kartami — od Q4 2024": "BLIK online > card CNP — since Q4 2024", "BLIK jest dominującą metodą e-płatności w Polsce.": "BLIK is the dominant online payment method in Poland.", "Produkt budowany \"card-first\" w checkout traci pozycję domyślną.": "A \"card-first\" checkout product loses its default position.", "CNP zagraniczny rośnie szybciej niż krajowy": "Cross-border CNP grows faster than domestic", "Polacy coraz więcej kupują za granicą online.": "Poles buy more and more from foreign online stores.", "Transparent FX i ochrona przed DCC to realny pain point.": "Transparent FX and protection from DCC are a real pain point.", "Akceptanci internet +31% r/r": "Online merchants +31% YoY", "Rynek e-merchantów rośnie szybciej niż stacjonarny.": "The e-merchant market grows faster than brick-and-mortar.", "Self-serve onboarding i API-first mają bezpośredni wpływ na konwersję.": "Self-serve onboarding and API-first have a direct impact on conversion.", "Śr. koszyk BLIK internet: 160 zł i rośnie": "Avg. BLIK online ticket: 160 PLN and rising", "Wzrost z 143 zł (Q1 2024) do 160 zł (Q4 2025).": "Up from 143 PLN (Q1 2024) to 160 PLN (Q4 2025).", "Trend wspierający ratalność w checkout.": "A trend that supports instalments at checkout.", "Przyjmowanie płatności na smartfonie za pomocą wbudowanego czytnika NFC.": "Accepting payments on a smartphone using its built-in NFC reader.", "· Dane za: różne okresy, brak ujednoliconej daty": "· Data period: varies, no common reference date", "Rynek SoftPOS · 2024": "SoftPOS market · 2024", "liczba urządzeń": "devices", "tys. szt.": "k units", "udział w POS": "share of POS", "koncentracja": "concentration", "top 3 marki": "top 3 brands", "Aplikacje SoftPOS": "SoftPOS apps", "pobrania (Android)": "downloads (Android)", "tys.+": "k+", "progi Google Play": "Google Play thresholds", "ocena ważona": "weighted rating", "455 ocen": "455 ratings", "dostępność iOS": "iOS availability", "tylko 2 apki": "only 2 apps", "Pobrania aplikacji — Android": "App downloads — Android", "Zaokrąglone progi Google Play": "Rounded Google Play thresholds", "App Store nie publikuje liczby pobrań, więc dane dotyczą tylko Androida.": "The App Store does not publish download counts, so this data covers Android only.", "Śr. ocena Android (5 apek, łącznie 455 ocen)": "Avg. Android rating (5 apps, 455 ratings in total)", "rozstrzał 2,4–4,3★": "range 2.4–4.3★", "Najlepiej oceniana": "Top rated", "4,3★ Android (52 oceny) · 4,4★ iOS (24 oceny)": "4.3★ Android (52 ratings) · 4.4★ iOS (24 ratings)", "jedyna z oceną >4★ na obu platformach": "the only one rated >4★ on both platforms", "Dostępność na iOS": "iOS availability", "5 z 7 tylko na Android": "5 of 7 Android only", "Oceny aplikacji — Google Play (Android)": "App ratings — Google Play (Android)", "Ocena w gwiazdkach (1–5). Elavon SoftPOS i PepPay: za mało recenzji, Google Play nie pokazuje oceny.": "Star rating (1–5). Elavon SoftPOS and PepPay: too few reviews, so Google Play shows no rating.", "Oceny aplikacji — App Store (iOS)": "App ratings — App Store (iOS)", "Ocena w gwiazdkach (1–5). Tylko 2 z 7 aplikacji są dostępne na iOS.": "Star rating (1–5). Only 2 of 7 apps are available on iOS.", "Aplikacje SoftPOS dostępne w Polsce — Oceny i Popularność": "SoftPOS apps available in Poland — Ratings and Popularity", "Aplikacja": "App", "Android — ocena": "Android — rating", "Opinie": "Reviews", "Pobrania": "Downloads", "iOS — ocena": "iOS — rating", "Oceny iOS": "iOS ratings", "— (brak na iOS)": "— (not on iOS)", "b.d.*": "n/a*", "Dane pobrane ręcznie ze sklepów Google Play i App Store, stan na czerwiec 2026. * b.d. — Google Play nie wyświetla oceny, gdy liczba recenzji jest zbyt niska (zwykle <5). Obie aplikacje mają bardzo małą bazę pobrań w stosunku do pozostałych.": "Data collected manually from Google Play and the App Store, as of June 2026. * n/a — Google Play shows no rating when there are too few reviews (usually <5). Both apps have a very small download base compared with the others.", "Liczba terminali SoftPOS · 2022–2024": "SoftPOS terminal count · 2022–2024", "Liczba terminali SoftPOS per marka": "SoftPOS terminals by brand", "Szt. · 2022–2024": "Units · 2022–2024", "Dane niepełne dla części marek — linia przerywa się przy braku danych. Uwaga metodologiczna: liczba marek z dostępnymi danymi rośnie z roku na rok (4 w 2022 → 7 w 2024), więc wzrost sumy łącznej częściowo wynika z rozszerzenia zbioru, nie tylko z organicznego wzrostu istniejących wdrożeń. Wskaźnik r/r w KPI (+48,3%) liczony like-for-like na 5 markach obecnych w 2023 i 2024 (bez PepPay i eService tom), dla rzetelności porównania. Dane za 2025 nie są jeszcze dostępne dla żadnej marki.": "Data is incomplete for some brands — the line breaks where data is missing. Methodology note: the number of brands with available data grows each year (4 in 2022 → 7 in 2024), so part of the growth in the total comes from a wider sample, not only from organic growth of existing deployments. The YoY figure in the KPI (+48.3%) is calculated like-for-like on the 5 brands present in both 2023 and 2024 (excluding PepPay and eService tom), for a fair comparison. 2025 data is not yet available for any brand.", "SoftPOS to wciąż nisza z dużym zapasem wzrostu": "SoftPOS is still a niche with plenty of room to grow", "≈ 50 tys. urządzeń SoftPOS wobec 1,41 mln terminali POS — ok. 3,6% rynku.": "≈ 50k SoftPOS devices vs 1.41M POS terminals — about 3.6% of the market.", "Przy wzroście ×4,6 w dwa lata (4 marki) to naturalny kanał onboardingu mikro-merchantów, dla których klasyczny terminal jest za drogi.": "With ×4.6 growth in two years (4 brands), it is a natural onboarding channel for micro-merchants for whom a classic terminal is too expensive.", "Jakość aplikacji to realny wyróżnik": "App quality is a real differentiator", "Średnia ocena na Androidzie to 3,3★, a najczęściej oceniana aplikacja (ING eTerminal, 169 ocen) ma tylko 2,4★.": "The average Android rating is 3.3★, and the most-rated app (ING eTerminal, 169 ratings) has only 2.4★.", "Stabilność, szybkość płatności i prosty onboarding mogą przesądzić o wyborze dostawcy bardziej niż cena.": "Stability, payment speed and simple onboarding can decide the choice of provider more than price.", "Luka na iOS": "The iOS gap", "Tylko 2 z 7 aplikacji działają na iPhone.": "Only 2 of 7 apps work on iPhone.", "Merchanci korzystający z iOS mają bardzo ograniczony wybór — wsparcie obu platform to szansa na przewagę first movera.": "Merchants on iOS have a very limited choice — supporting both platforms is a first-mover opportunity.", "Dystrybucja wygrywa z produktem": "Distribution beats product", "3 marki (Polcard, Planet Pay, ING) mają ok. 87% terminali, a Planet Pay urósł ×10 r/r (1,3 → 13,3 tys.).": "3 brands (Polcard, Planet Pay, ING) hold about 87% of terminals, and Planet Pay grew ×10 YoY (1.3k → 13.3k).", "O skali decyduje dostęp do bazy merchantów acquirera lub banku — samodzielna aplikacja SoftPOS bez kanału sprzedaży ma trudny start.": "Scale depends on access to an acquirer's or bank's merchant base — a standalone SoftPOS app without a sales channel has a hard start.", "— przygotowanie danych, analiza, dobór metryk, wnioski produktowe": "— data preparation, analysis, metric selection, product insights", "Dane: NBP, Cashless.pl, Google Play, App Store": "Data: NBP, Cashless.pl, Google Play, App Store", "Narzędzia: Claude (Anthropic), ChatGPT (OpenAI), Google Sheets": "Tools: Claude (Anthropic), ChatGPT (OpenAI), Google Sheets", "ING Bank Śląski": "ING Bank Śląski", "Polskie ePłatności": "Polskie ePłatności", "śr. koszyk": "avg. ticket", "Śr. koszyk": "Avg. ticket", "Wartość": "Value", "E-commerce (CNP + BLIK)": "E-commerce (CNP + BLIK)", "POS kod": "POS code", "POS zbliżeniowy": "POS contactless", "Kod": "Code", "Zbliż.": "Contactl.", "Zbliżeniowy": "Contactless", "Pon": "Mon", "Wt": "Tue", "Śr": "Wed", "Czw": "Thu", "Pt": "Fri", "Sob": "Sat", "Nd": "Sun", "Udział %": "Share %", "liczby transakcji BLIK": "of BLIK transactions", "POS (kod+zbliż.)": "POS (code+contactless)", "trans.": "txn", "Liczba transakcji (mln)": "Transactions (M)", "Średni koszyk (zł)": "Average ticket (PLN)", "Karta debetowa": "Debit card", "Karta kredytowa": "Credit card", "Karta prepaid": "Prepaid card", "Karta obciążeniowa": "Charge card", "Debet": "Debit", "Kredyt": "Credit", "Obciąż.": "Charge", "Dane za ALL 2025 (suma Q1–Q4) · Karty wydane w Polsce, obejmują też wypłaty gotówki w bankomacie": "FY 2025 data (Q1–Q4 total) · Cards issued in Poland, also includes ATM cash withdrawals", "Szacunek za ALL 2025 — NBP nie rozbija kart zagranicznych na typ, podział debet/kredyt przybliżony proporcjonalnie wg udziału w rynku krajowym · BLIK nie występuje w transakcjach zagranicznych POS": "FY 2025 estimate — NBP does not split foreign cards by type, so the debit/credit split is approximated from domestic market shares · BLIK does not appear in foreign POS transactions", "CNP kartami": "Card CNP", "BLIK internet": "BLIK online", "CNP PL": "CNP domestic", "CNP zagranica": "CNP cross-border", "BLIK (internet i P2P) — brak osobnej pozycji zagranicznej w danych NBP": "BLIK (online and P2P) — no separate cross-border line in NBP data", "Śr. koszyk kod": "Avg. ticket code", "Śr. koszyk zbliżeniowy": "Avg. ticket contactless", "Liczba płatności (mln szt.)": "Payments (M)", "r/r": "YoY", "Obrót (mld zł)": "Value (bn PLN)", "Wolumen (mln szt.)": "Volume (M txns)", "BLIK int.": "BLIK online", "Placówki": "Outlets", "placówki/akceptant": "outlets/merchant", "pobrań": "downloads", "b.d.": "n/a", "brak oceny": "no rating", "brak danych": "no data"};
+const I18N_META={
+  en:{title:'Payments Market · Poland · NBP',desc:'Interactive dashboard of the Polish payments market: POS, e-commerce, BLIK and SoftPOS, based on NBP data (Q1 2024 – Q4 2025).'},
+  pl:{title:'Rynek płatności · Polska · NBP',desc:'Interaktywny dashboard rynku płatności w Polsce: POS, e-commerce, BLIK i SoftPOS na danych NBP (Q1 2024 – Q4 2025).'}
+};
+// Fallback for strings not in the dictionary (mostly numbers with units): Polish → English number format and units
+function autoEn(s){return s
+  .replace(/(\d),(\d)/g,'$1.$2')
+  .replace(/(\d)[  ](\d{3})(?!\d)/g,'$1,$2')
+  .replace(/\s?mld zł/g,'bn PLN').replace(/\s?mln zł/g,'M PLN')
+  .replace(/\s?mld szt\./g,'bn txns').replace(/\s?mln szt\./g,'M txns').replace(/\s?tys\. szt\./g,'k units')
+  .replace(/\s?mld(?![a-ząćęłńóśźż])/g,'bn').replace(/\s?mln(?![a-ząćęłńóśźż])/g,'M').replace(/\s?tys\./g,'k')
+  .replace(/zł/g,'PLN').replace(/\s?szt\./g,'')
+  .replace(/↑ z /g,'↑ from ').replace(/↓ z /g,'↓ from ')
+  .replace(/r\/r/g,'YoY').replace(/\bALL (\d{4})/g,'FY $1');}
+function T(s){if(LANG==='pl'||s==null)return s;return Object.prototype.hasOwnProperty.call(I18N,s)?I18N[s]:autoEn(s);}
+function sfx(u){if(LANG==='pl')return ' '+u;const m={'zł':' PLN','szt.':'','mln':'M','mld':'bn','tys.':'k'};return u in m?m[u]:' '+u;}
+function dec(s){return LANG==='pl'?String(s).replace('.',','):String(s);}
+const I18N_SKIP='#leg-mix,#h-blik-mix-leg,#pos-dw-leg,#pos-dv-leg,#ecom-dw-leg,#ecom-dv-leg,#soft-terminals-leg,#h-dcc-mini,.fn-note,.lang-sw,script,style';
+const _i18nOrig=new WeakMap();
+function trText(raw){const m=raw.match(/^(\s*)([\s\S]*?)(\s*)$/);return m[2]?m[1]+T(m[2])+m[3]:raw;}
+function applyDom(){
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:n=>n.parentElement&&n.parentElement.closest(I18N_SKIP)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+  let n;while((n=w.nextNode())){if(!_i18nOrig.has(n))_i18nOrig.set(n,n.nodeValue);const o=_i18nOrig.get(n);n.nodeValue=LANG==='pl'?o:trText(o);}
+  document.querySelectorAll('[title]').forEach(el=>{if(el.closest(I18N_SKIP))return;if(el.dataset.titlePl==null)el.dataset.titlePl=el.title;el.title=T(el.dataset.titlePl);});
+  const meta=I18N_META[LANG];
+  document.documentElement.lang=LANG;document.title=meta.title;
+  document.querySelectorAll('meta[name="description"],meta[property="og:description"]').forEach(m=>m.setAttribute('content',meta.desc));
+  const ogt=document.querySelector('meta[property="og:title"]');if(ogt)ogt.setAttribute('content',meta.title);
+  document.querySelectorAll('.lang-sw button').forEach(b=>{const on=b.dataset.lang===LANG;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+}
+function setLang(l){
+  if(l===LANG)return;
+  LANG=l;LOC=l==='pl'?'pl-PL':'en-US';DS=l==='pl'?',':'.';
+  try{localStorage.setItem('dash-lang',l);}catch(e){}
+  applyDom();
+  if(window.Chart&&typeof initCharts==='function'){
+    Object.values(Chart.instances).forEach(c=>c.destroy());
+    document.querySelectorAll('.tog-row').forEach(r=>r.querySelectorAll('.tog').forEach((b,i)=>b.classList.toggle('on',i===0)));
+    Chart.defaults.locale=LOC;
+    initCharts();
+  }
+}
+LOC=LANG==='pl'?'pl-PL':'en-US';DS=LANG==='pl'?',':'.';
+try{applyDom();}finally{document.documentElement.classList.remove('i18n-wait');}
+</script>
 <script>
 Chart.defaults.resizeDelay=150;
+Chart.defaults.locale=LOC;
 Chart.defaults.animation.duration=500;
 Chart.defaults.transitions.resize={animation:{duration:0}};
 const dk=window.matchMedia('(prefers-color-scheme:dark)').matches;
@@ -609,15 +677,17 @@ function scrollToSec(secId,btn){
     if(!ticking){ticking=true;requestAnimationFrame(updateActive);}
   },{passive:true});
 })();
-function fmt(n,u){return n.toLocaleString('pl-PL')+' '+u;}
+function fmt(n,u){return n.toLocaleString(LOC)+sfx(u);}
 (function(){
   let t=null;
   window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(()=>{Object.values(Chart.instances).forEach(ch=>{if(ch.canvas&&ch.canvas.offsetParent!==null)ch.resize();});},250);});
 })();
 
+function initCharts(){
 // ── DONUT ─────────────────────────────────────────────────────────
 const _dc={};
 function buildDonut(id,legId,labels,raw,colors,unit,koszyk,note,shortLabels){
+  labels=labels.map(T);if(shortLabels)shortLabels=shortLabels.map(T);if(note)note=T(note);
   const total=raw.reduce((a,b)=>a+b,0);
   const sLabels=shortLabels||labels;
   if(_dc[id]) _dc[id].destroy();
@@ -683,7 +753,7 @@ function buildDonut(id,legId,labels,raw,colors,unit,koszyk,note,shortLabels){
       plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{
         const p=((ctx.raw/total)*100).toFixed(1);
         const lines=[` ${ctx.label}: ${p}% · ${fmt(ctx.raw,unit)}`];
-        if(koszyk) lines.push(` śr. koszyk: ${koszyk[ctx.dataIndex].toLocaleString('pl-PL')} zł`);
+        if(koszyk) lines.push(` ${T('śr. koszyk')}: ${koszyk[ctx.dataIndex].toLocaleString(LOC)}${sfx('zł')}`);
         return lines;
       }}}}}
   });
@@ -705,9 +775,9 @@ function gbPaired(id,d24,d25,raw24,raw25,unit,rawUnit){
   for(let q=0;q<4;q++){labels.push("Q"+(q+1)+" '24");labels.push("Q"+(q+1)+" '25");a24.push(d24[q]);a24.push(null);a25.push(null);a25.push(d25[q]);}
   const t24=raw24.reduce((a,b)=>a+b,0),t25=raw25.reduce((a,b)=>a+b,0);
   new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[
-    {label:'2024',data:a24,backgroundColor:C.y24,borderRadius:3,borderSkipped:false,categoryPercentage:.8,barPercentage:.9},
-    {label:'2025',data:a25,backgroundColor:C.y25,borderRadius:3,borderSkipped:false,categoryPercentage:.8,barPercentage:.9}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,filter:i=>i.parsed.y!==null,callbacks:{label:c=>{const qi=Math.floor(c.dataIndex/2),yr=c.datasetIndex===0?'24':'25';const raw=yr==='24'?raw24[qi]:raw25[qi],total=yr==='24'?t24:t25;return ` ${c.dataset.label}: ${((raw/total)*100).toFixed(1)}% · ${fmt(raw,rawUnit)}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' '+unit}}}}});
+    {label:T('2024'),data:a24,backgroundColor:C.y24,borderRadius:3,borderSkipped:false,categoryPercentage:.8,barPercentage:.9},
+    {label:T('2025'),data:a25,backgroundColor:C.y25,borderRadius:3,borderSkipped:false,categoryPercentage:.8,barPercentage:.9}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,filter:i=>i.parsed.y!==null,callbacks:{label:c=>{const qi=Math.floor(c.dataIndex/2),yr=c.datasetIndex===0?'24':'25';const raw=yr==='24'?raw24[qi]:raw25[qi],total=yr==='24'?t24:t25;return ` ${c.dataset.label}: ${((raw/total)*100).toFixed(1)}% · ${fmt(raw,rawUnit)}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+sfx(unit)}}}}});
 }
 
 function lineChart(id,datasets){
@@ -715,9 +785,10 @@ function lineChart(id,datasets){
 }
 
 function yoyBar(id,labels,y24,y25,raw24,raw25,unit,rawUnit){
+  labels=labels.map(T);
   const t24=raw24.reduce((a,b)=>a+b,0),t25=raw25.reduce((a,b)=>a+b,0);
-  const plug={id:'yoy',afterDatasetsDraw(chart){const ctx=chart.ctx;ctx.save();ctx.textAlign='center';const meta=chart.getDatasetMeta(1);const pcts=y24.map((v,i)=>(y25[i]-v)/v*100);const mx=pcts.indexOf(Math.max(...pcts));y24.forEach((_,i)=>{const bar=meta.data[i];if(!bar)return;const pct=pcts[i];ctx.font=i===mx?'600 13px -apple-system,sans-serif':'400 12px -apple-system,sans-serif';ctx.fillStyle=pct>=0?(dk?'#C0DD97':'#3B6D11'):(dk?'#F7C1C1':'#A32D2D');ctx.fillText((pct>=0?'+':'')+pct.toFixed(1).replace('.',',')+'%',bar.x,bar.y-7);});ctx.restore();}};
-  return new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[{label:'ALL 2024',data:y24,backgroundColor:C.y24+'CC',borderRadius:3,borderSkipped:false,categoryPercentage:.65,barPercentage:.92},{label:'ALL 2025',data:y25,backgroundColor:C.y25+'CC',borderRadius:3,borderSkipped:false,categoryPercentage:.65,barPercentage:.92}]},plugins:[plug],options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const i=c.dataIndex,yr=c.datasetIndex===0?'24':'25';const raw=yr==='24'?raw24[i]:raw25[i],total=yr==='24'?t24:t25;return ` ${c.dataset.label}: ${((raw/total)*100).toFixed(1)}% · ${fmt(raw,rawUnit)}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' '+unit}}}}});
+  const plug={id:'yoy',afterDatasetsDraw(chart){const ctx=chart.ctx;ctx.save();ctx.textAlign='center';const meta=chart.getDatasetMeta(1);const pcts=y24.map((v,i)=>(y25[i]-v)/v*100);const mx=pcts.indexOf(Math.max(...pcts));y24.forEach((_,i)=>{const bar=meta.data[i];if(!bar)return;const pct=pcts[i];ctx.font=i===mx?'600 13px -apple-system,sans-serif':'400 12px -apple-system,sans-serif';ctx.fillStyle=pct>=0?(dk?'#C0DD97':'#3B6D11'):(dk?'#F7C1C1':'#A32D2D');ctx.fillText((pct>=0?'+':'')+pct.toFixed(1).replace('.',DS)+'%',bar.x,bar.y-7);});ctx.restore();}};
+  return new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[{label:T('ALL 2024'),data:y24,backgroundColor:C.y24+'CC',borderRadius:3,borderSkipped:false,categoryPercentage:.65,barPercentage:.92},{label:T('ALL 2025'),data:y25,backgroundColor:C.y25+'CC',borderRadius:3,borderSkipped:false,categoryPercentage:.65,barPercentage:.92}]},plugins:[plug],options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const i=c.dataIndex,yr=c.datasetIndex===0?'24':'25';const raw=yr==='24'?raw24[i]:raw25[i],total=yr==='24'?t24:t25;return ` ${c.dataset.label}: ${((raw/total)*100).toFixed(1)}% · ${fmt(raw,rawUnit)}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+sfx(unit)}}}}});
 }
 
 // ── DATA ──────────────────────────────────────────────────────────
@@ -750,7 +821,7 @@ const D={
   const BCHANS=[
     {name:'POS',c24:'#8BAEC8',c25:'#1F6FB2',d24:{vol:9683382256,koszyk:65.7,val:635902237964},d25:{vol:10096299248,koszyk:67.0,val:676560254271}},
     {name:'E-commerce',c24:'#9FD6CC',c25:'#5BBFAA',d24:{vol:2006546250,koszyk:149.7,val:300458793808},d25:{vol:2407316836,koszyk:156.9,val:377779928031}},
-    {name:'Bankomat',c24:'#C4A882',c25:'#BA7517',d24:{vol:406392143,koszyk:946.3,val:384560126989},d25:{vol:378630334,koszyk:1056.7,val:400112854188}},
+    {name:T('Bankomat'),c24:'#C4A882',c25:'#BA7517',d24:{vol:406392143,koszyk:946.3,val:384560126989},d25:{vol:378630334,koszyk:1056.7,val:400112854188}},
   ];
   const MV=Math.max(...BCHANS.flatMap(c=>[c.d24.val,c.d25.val]));
   const br=v=>5+(v/MV)*34;
@@ -771,8 +842,8 @@ const D={
         if(len>2){const ux=dx/len,uy=dy/len;const gap=p1.options.radius+p2.options.radius+4;const ov=len<=gap;const sx=ov?p1.x:p1.x+ux*(p1.options.radius+2),sy=ov?p1.y:p1.y+uy*(p1.options.radius+2);const ex=ov?p2.x:p2.x-ux*(p2.options.radius+2),ey=ov?p2.y:p2.y-uy*(p2.options.radius+2);ctx.beginPath();ctx.moveTo(sx,sy);ctx.lineTo(ex,ey);ctx.strokeStyle=dk?'rgba(255,255,255,0.25)':'rgba(0,0,0,0.2)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([]);const angle=Math.atan2(dy,dx);ctx.beginPath();ctx.moveTo(ex,ey);ctx.lineTo(ex-6*Math.cos(angle-0.4),ey-6*Math.sin(angle-0.4));ctx.lineTo(ex-6*Math.cos(angle+0.4),ey-6*Math.sin(angle+0.4));ctx.closePath();ctx.fillStyle=dk?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.3)';ctx.fill();}
       });ctx.restore();
     }}],
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:items=>{const p=items[0].raw;return p._n+' · '+p._y;},label:ctx=>{const p=ctx.raw;const tV=BCHANS.reduce((s,c)=>s+(p._y===2024?c.d24.vol:c.d25.vol),0);const tW=BCHANS.reduce((s,c)=>s+(p._y===2024?c.d24.val:c.d25.val),0);return[` Wolumen: ${((p._r.vol/tV)*100).toFixed(1)}% · ${fmt(p._r.vol,'szt.')}`,` Wartość: ${((p._r.val/tW)*100).toFixed(1)}% · ${fmt(p._r.val,'zł')}`,` Śr. koszyk: ${p._r.koszyk.toLocaleString('pl-PL')} zł`];}}}},
-    scales:{x:{title:{display:true,text:'Liczba transakcji (mln)',font:{size:11},color:tc},grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+' mln'}},y:{title:{display:true,text:'Średni koszyk (zł)',font:{size:11},color:tc},grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+' zł'}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:items=>{const p=items[0].raw;return p._n+' · '+p._y;},label:ctx=>{const p=ctx.raw;const tV=BCHANS.reduce((s,c)=>s+(p._y===2024?c.d24.vol:c.d25.vol),0);const tW=BCHANS.reduce((s,c)=>s+(p._y===2024?c.d24.val:c.d25.val),0);return[` ${T('Wolumen')}: ${((p._r.vol/tV)*100).toFixed(1)}% · ${fmt(p._r.vol,'szt.')}`,` ${T('Wartość')}: ${((p._r.val/tW)*100).toFixed(1)}% · ${fmt(p._r.val,'zł')}`,` ${T('Śr. koszyk')}: ${p._r.koszyk.toLocaleString(LOC)}${sfx('zł')}`];}}}},
+    scales:{x:{title:{display:true,text:T('Liczba transakcji (mln)'),font:{size:11},color:tc},grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+sfx('mln')}},y:{title:{display:true,text:T('Średni koszyk (zł)'),font:{size:11},color:tc},grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+sfx('zł')}}}}
   });
   const HCOL=['#1F6FB2','#5BBFAA','#BA7517'];
   const HL=['POS stacjonarny','E-commerce (CNP + BLIK)','Bankomat'];
@@ -793,11 +864,11 @@ const D={
 
   // BLIK — sezonowość tygodniowa (Q4 2025)
   (function(){
-    const dni=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'];
+    const dni=['Pon','Wt','Śr','Czw','Pt','Sob','Nd'].map(T);
     const udzial=[16,15,16,15,15,13,11];
     new Chart(document.getElementById('h-blik-week'),{type:'bar',
-      data:{labels:dni,datasets:[{label:'Udział %',data:udzial,backgroundColor:dni.map((_,i)=>i<5?C.y25:'#BA7517'),borderRadius:4,borderSkipped:false,categoryPercentage:.7,barPercentage:.85}]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.y}% liczby transakcji BLIK`}}},
+      data:{labels:dni,datasets:[{label:T('Udział %'),data:udzial,backgroundColor:dni.map((_,i)=>i<5?C.y25:'#BA7517'),borderRadius:4,borderSkipped:false,categoryPercentage:.7,barPercentage:.85}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.y}% ${T('liczby transakcji BLIK')}`}}},
         scales:{x:{...bx},y:{...by,min:0,max:20,ticks:{...by.ticks,callback:v=>v+'%'}}}}
     });
   })();
@@ -818,16 +889,16 @@ const D={
     const p2pK=koszyk(p2pVal,p2pVol), intK=koszyk(intVal,intVol), posK=koszyk(posVal,posVol), atmK=koszyk(atmVal,atmVol);
     const rawVal={p2p:p2pVal,int:intVal,pos:posVal,atm:atmVal};
     new Chart(document.getElementById('h-blik-koszyk'),{type:'line',data:{labels:Q8,datasets:[
-      {label:'P2P',data:p2pK,borderColor:'#7F77DD',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.3},
-      {label:'Internet',data:intK,borderColor:C.y25b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.3},
-      {label:'POS (kod+zbliż.)',data:posK,borderColor:C.y25,backgroundColor:'transparent',borderWidth:2,pointRadius:3,borderDash:[5,3],tension:.3},
-      {label:'Bankomat',data:atmK,borderColor:'#BA7517',backgroundColor:'transparent',borderWidth:2,pointRadius:3,borderDash:[5,3],tension:.3},
+      {label:T('P2P'),data:p2pK,borderColor:'#7F77DD',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.3},
+      {label:T('Internet'),data:intK,borderColor:C.y25b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:.3},
+      {label:T('POS (kod+zbliż.)'),data:posK,borderColor:C.y25,backgroundColor:'transparent',borderWidth:2,pointRadius:3,borderDash:[5,3],tension:.3},
+      {label:T('Bankomat'),data:atmK,borderColor:'#BA7517',backgroundColor:'transparent',borderWidth:2,pointRadius:3,borderDash:[5,3],tension:.3},
     ]},options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{
         const key=['p2p','int','pos','atm'][c.datasetIndex];
-        return ` ${c.dataset.label}: ${c.parsed.y.toLocaleString('pl-PL')} zł/trans. · ${fmt(rawVal[key][c.dataIndex],'zł')}`;
+        return ` ${c.dataset.label}: ${c.parsed.y.toLocaleString(LOC)}${sfx('zł')}/${T('trans.')} · ${fmt(rawVal[key][c.dataIndex],'zł')}`;
       }}}},
-      scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' zł'}}}}
+      scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+sfx('zł')}}}}
     });
   })();
   (function(){
@@ -838,8 +909,8 @@ const D={
     const iI=[...intAcc24,...intAcc25].map(v=>+(v/bI*100).toFixed(1));
     const aP=[...posAcc24,...posAcc25],aI=[...intAcc24,...intAcc25];
     lineChart('h-acc-idx',[
-      {label:'POS',data:pI,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:pI.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},
-      {label:'Internet',data:iI,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:iI.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3},
+      {label:T('POS'),data:pI,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:pI.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},
+      {label:T('Internet'),data:iI,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:iI.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3},
     ]);
   })();
   const YOY={vol:[['POS','E-commerce','Bankomat'],[9.68,2.01,0.41],[10.10,2.41,0.38],[9683382256,2006546250,406392143],[10096299248,2407316836,378630334],'mld','szt.'],val:[['POS','E-commerce','Bankomat'],[635.9,300.5,384.6],[676.6,377.8,400.1],[635902237964,300458793808,384560126989],[676560254271,377779928031,400112854188],'mld','zł']};
@@ -861,7 +932,7 @@ const D={
   function setDccScope(scope,btn){
     if(btn){btn.parentElement.querySelectorAll('.tog').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
     const d=DCC_D[scope];
-    document.getElementById('h-dcc-mini').innerHTML=`<div class="atm-top">DCC (Potencjał) · wszystkie kanały</div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Obrót ALL 2025</div><div class="mini-v" style="color:#1F6FB2">${d.all25v}</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">Obrót ALL 2024</div><div class="mini-v" style="color:#8BAEC8">${d.all24v}</div></div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">Trans. ALL 2025</div><div class="mini-v" style="color:#1F6FB2">${d.all25t}</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">Trans. ALL 2024</div><div class="mini-v" style="color:#8BAEC8">${d.all24t}</div></div>`;
+    document.getElementById('h-dcc-mini').innerHTML=`<div class="atm-top">${T('DCC (Potencjał) · wszystkie kanały')}</div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">${T('Obrót ALL 2025')}</div><div class="mini-v" style="color:#1F6FB2">${T(d.all25v)}</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">${T('Obrót ALL 2024')}</div><div class="mini-v" style="color:#8BAEC8">${T(d.all24v)}</div></div><div class="mini" style="background:#E3EDF7;border-left-color:#1F6FB2"><div class="mini-l">${T('Trans. ALL 2025')}</div><div class="mini-v" style="color:#1F6FB2">${T(d.all25t)}</div></div><div class="mini" style="background:#E8F1F8;border-left-color:#8BAEC8"><div class="mini-l">${T('Trans. ALL 2024')}</div><div class="mini-v" style="color:#8BAEC8">${T(d.all24t)}</div></div>`;
     if(_hDccChart){_hDccChart.destroy();_hDccChart=null;}
     const vV=d.vol.map(v=>+(v/1e6).toFixed(scope==='cb'?3:1));
     const vW=d.val.map(v=>+(v/1e9).toFixed(scope==='cb'?3:1));
@@ -870,9 +941,9 @@ const D={
     const vWdisp=scope==='cb'?d.val.map(v=>+(v/1e6).toFixed(1)):vW;
     const yMax=scope==='cb'?30:150, yMax2=scope==='cb'?7:18;
     _hDccChart=new Chart(document.getElementById('h-dcc'),{type:'line',data:{labels:Q8,datasets:[
-      {label:'Wolumen',data:vVdisp,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:vVdisp.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3,yAxisID:'y'},
-      {label:'Obrót',data:vWdisp,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:vWdisp.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3,yAxisID:'y2'}
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const i=c.dataIndex;if(c.datasetIndex===0)return ` Wolumen: ${c.parsed.y.toFixed(1)} ${volUnit} · ${fmt(d.vol[i],'szt.')}`;return ` Obrót: ${c.parsed.y.toFixed(1)} ${valUnit} · ${fmt(d.val[i],'zł')}`;}}}},scales:{x:{...bx},y:{...by,min:0,max:yMax,position:'left',ticks:{...by.ticks,callback:v=>v+' '+volUnit}},y2:{min:0,max:yMax2,grid:{display:false},ticks:{font:{size:11},color:tc,callback:v=>v+' '+valUnit},position:'right'}}}});
+      {label:T('Wolumen'),data:vVdisp,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:vVdisp.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3,yAxisID:'y'},
+      {label:T('Obrót'),data:vWdisp,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:vWdisp.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3,yAxisID:'y2'}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const i=c.dataIndex;if(c.datasetIndex===0)return ` ${T('Wolumen')}: ${dec(c.parsed.y.toFixed(1))}${sfx(volUnit)} · ${fmt(d.vol[i],'szt.')}`;return ` ${T('Obrót')}: ${dec(c.parsed.y.toFixed(1))}${sfx(valUnit)} · ${fmt(d.val[i],'zł')}`;}}}},scales:{x:{...bx},y:{...by,min:0,max:yMax,position:'left',ticks:{...by.ticks,callback:v=>v+sfx(volUnit)}},y2:{min:0,max:yMax2,grid:{display:false},ticks:{font:{size:11},color:tc,callback:v=>v+sfx(valUnit)},position:'right'}}}});
   }
   window.setDccScope=setDccScope;
   setDccScope('suma',null);
@@ -912,8 +983,8 @@ buildDonut('pos-dw','pos-dw-leg',POS_D.suma.val.labels,POS_D.suma.val.raw,POS_D.
   const mn=a=>a.map(v=>+(v/1e6).toFixed(1));
   const kK=kV.map((v,i)=>+(v/kN[i]).toFixed(1)), zK=zV.map((v,i)=>+(v/zN[i]).toFixed(1));
   const yr=(c24,c25)=>Q8.map((_,i)=>i<4?c24:c25);
-  const zl=v=>v.toLocaleString('pl-PL',{minimumFractionDigits:1,maximumFractionDigits:1})+' zł';
-  const yoy=(a,i)=>{if(i<4)return '';const p=(a[i]/a[i-4]-1)*100;return ` · ${(p>=0?'+':'')+p.toFixed(1).replace('.',',')}% r/r`;};
+  const zl=v=>v.toLocaleString(LOC,{minimumFractionDigits:1,maximumFractionDigits:1})+sfx('zł');
+  const yoy=(a,i)=>{if(i<4)return '';const p=(a[i]/a[i-4]-1)*100;return ` · ${(p>=0?'+':'')+p.toFixed(1).replace('.',DS)}% ${T('r/r')}`;};
   const yearSplit={id:'yearSplit',afterDraw(chart){
     const {ctx,chartArea:ca,scales:{x}}=chart;
     const xm=(x.getPixelForValue(3)+x.getPixelForValue(4))/2;
@@ -927,20 +998,20 @@ buildDonut('pos-dw','pos-dw-leg',POS_D.suma.val.labels,POS_D.suma.val.raw,POS_D.
   new Chart(document.getElementById('p3'),{
     plugins:[yearSplit],
     data:{labels:Q8,datasets:[
-      {type:'bar',label:'Kod — wolumen',data:mn(kN),backgroundColor:yr(C.y24,C.y25),borderRadius:2,borderSkipped:false,categoryPercentage:.7,barPercentage:.9,yAxisID:'y',order:2},
-      {type:'bar',label:'Zbliżeniowy — wolumen',data:mn(zN),backgroundColor:yr(C.y24b,C.y25b),borderRadius:2,borderSkipped:false,categoryPercentage:.7,barPercentage:.9,yAxisID:'y',order:2},
-      {type:'line',label:'Kod — śr. koszyk',data:kK,borderColor:'#BA7517',backgroundColor:'#BA7517',borderWidth:2,pointRadius:3,tension:.3,yAxisID:'y2',order:1},
-      {type:'line',label:'Zbliżeniowy — śr. koszyk',data:zK,borderColor:'#7F77DD',backgroundColor:'#7F77DD',borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3,yAxisID:'y2',order:1}
+      {type:'bar',label:T('Kod — wolumen'),data:mn(kN),backgroundColor:yr(C.y24,C.y25),borderRadius:2,borderSkipped:false,categoryPercentage:.7,barPercentage:.9,yAxisID:'y',order:2},
+      {type:'bar',label:T('Zbliżeniowy — wolumen'),data:mn(zN),backgroundColor:yr(C.y24b,C.y25b),borderRadius:2,borderSkipped:false,categoryPercentage:.7,barPercentage:.9,yAxisID:'y',order:2},
+      {type:'line',label:T('Kod — śr. koszyk'),data:kK,borderColor:'#BA7517',backgroundColor:'#BA7517',borderWidth:2,pointRadius:3,tension:.3,yAxisID:'y2',order:1},
+      {type:'line',label:T('Zbliżeniowy — śr. koszyk'),data:zK,borderColor:'#7F77DD',backgroundColor:'#7F77DD',borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3,yAxisID:'y2',order:1}
     ]},
     options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const i=c.dataIndex;
-        if(c.datasetIndex===0) return ` Kod: ${fmt(kN[i],'szt.')}${yoy(kN,i)}`;
-        if(c.datasetIndex===1) return ` Zbliżeniowy: ${fmt(zN[i],'szt.')}${yoy(zN,i)}`;
-        if(c.datasetIndex===2) return ` Śr. koszyk kod: ${zl(kK[i])}`;
-        return ` Śr. koszyk zbliżeniowy: ${zl(zK[i])}`;}}}},
+        if(c.datasetIndex===0) return ` ${T('Kod')}: ${fmt(kN[i],'szt.')}${yoy(kN,i)}`;
+        if(c.datasetIndex===1) return ` ${T('Zbliżeniowy')}: ${fmt(zN[i],'szt.')}${yoy(zN,i)}`;
+        if(c.datasetIndex===2) return ` ${T('Śr. koszyk kod')}: ${zl(kK[i])}`;
+        return ` ${T('Śr. koszyk zbliżeniowy')}: ${zl(zK[i])}`;}}}},
       scales:{x:{...bx},
-        y:{...by,min:0,position:'left',title:{display:true,text:'Liczba płatności (mln szt.)',font:{size:11},color:tc},ticks:{...by.ticks,callback:v=>v+' mln'}},
-        y2:{min:0,suggestedMax:90,position:'right',grid:{display:false},title:{display:true,text:'Średni koszyk (zł)',font:{size:11},color:tc},ticks:{font:{size:11},color:tc,callback:v=>v+' zł'}}}}
+        y:{...by,min:0,position:'left',title:{display:true,text:T('Liczba płatności (mln szt.)'),font:{size:11},color:tc},ticks:{...by.ticks,callback:v=>v+sfx('mln')}},
+        y2:{min:0,suggestedMax:90,position:'right',grid:{display:false},title:{display:true,text:T('Średni koszyk (zł)'),font:{size:11},color:tc},ticks:{font:{size:11},color:tc,callback:v=>v+sfx('zł')}}}}
   });
 })();
 // DCC POS — obrót (słupki) vs wolumen (linie), 2024 vs 2025 per kwartał
@@ -949,25 +1020,25 @@ buildDonut('pos-dw','pos-dw-leg',POS_D.suma.val.labels,POS_D.suma.val.raw,POS_D.
   const val24=[8029346767,9489292624,11970351035,9748067314], val25=[8171896644,10389150549,12924795507,10493819761];
   const vol24=[74286803,88374535,109883879,90497522],        vol25=[78722048,100587738,124256170,102340624];
   const bn=a=>a.map(v=>+(v/1e9).toFixed(2)), mn=a=>a.map(v=>+(v/1e6).toFixed(1));
-  const yoy=(a,b,i)=>{const p=(b[i]/a[i]-1)*100;return (p>=0?'+':'')+p.toFixed(1).replace('.',',')+'% r/r';};
+  const yoy=(a,b,i)=>{const p=(b[i]/a[i]-1)*100;return (p>=0?'+':'')+p.toFixed(1).replace('.',DS)+'% '+T('r/r');};
   new Chart(document.getElementById('p-dcc'),{
     data:{labels:Q4L,datasets:[
-      {type:'bar',label:'Obrót 2024',data:bn(val24),backgroundColor:C.y24,borderRadius:3,borderSkipped:false,categoryPercentage:.6,barPercentage:.9,yAxisID:'y',order:2},
-      {type:'bar',label:'Obrót 2025',data:bn(val25),backgroundColor:C.y25,borderRadius:3,borderSkipped:false,categoryPercentage:.6,barPercentage:.9,yAxisID:'y',order:2},
-      {type:'line',label:'Wolumen 2024',data:mn(vol24),borderColor:C.y24b,backgroundColor:C.y24b,borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3,yAxisID:'y2',order:1},
-      {type:'line',label:'Wolumen 2025',data:mn(vol25),borderColor:C.y25b,backgroundColor:C.y25b,borderWidth:2,pointRadius:3.5,tension:.3,yAxisID:'y2',order:1}
+      {type:'bar',label:T('Obrót 2024'),data:bn(val24),backgroundColor:C.y24,borderRadius:3,borderSkipped:false,categoryPercentage:.6,barPercentage:.9,yAxisID:'y',order:2},
+      {type:'bar',label:T('Obrót 2025'),data:bn(val25),backgroundColor:C.y25,borderRadius:3,borderSkipped:false,categoryPercentage:.6,barPercentage:.9,yAxisID:'y',order:2},
+      {type:'line',label:T('Wolumen 2024'),data:mn(vol24),borderColor:C.y24b,backgroundColor:C.y24b,borderWidth:2,borderDash:[5,3],pointRadius:3,tension:.3,yAxisID:'y2',order:1},
+      {type:'line',label:T('Wolumen 2025'),data:mn(vol25),borderColor:C.y25b,backgroundColor:C.y25b,borderWidth:2,pointRadius:3.5,tension:.3,yAxisID:'y2',order:1}
     ]},
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{callbacks:{
         title:it=>it[0].label+' · 2024 vs 2025',
         label:c=>{const i=c.dataIndex;
-          if(c.datasetIndex===0) return ` Obrót 2024: ${fmt(val24[i],'zł')}`;
-          if(c.datasetIndex===1) return ` Obrót 2025: ${fmt(val25[i],'zł')} (${yoy(val24,val25,i)})`;
-          if(c.datasetIndex===2) return ` Wolumen 2024: ${fmt(vol24[i],'szt.')}`;
-          return ` Wolumen 2025: ${fmt(vol25[i],'szt.')} (${yoy(vol24,vol25,i)})`;}}}},
+          if(c.datasetIndex===0) return ` ${T('Obrót 2024')}: ${fmt(val24[i],'zł')}`;
+          if(c.datasetIndex===1) return ` ${T('Obrót 2025')}: ${fmt(val25[i],'zł')} (${yoy(val24,val25,i)})`;
+          if(c.datasetIndex===2) return ` ${T('Wolumen 2024')}: ${fmt(vol24[i],'szt.')}`;
+          return ` ${T('Wolumen 2025')}: ${fmt(vol25[i],'szt.')} (${yoy(vol24,vol25,i)})`;}}}},
       scales:{x:{...bx},
-        y:{...by,min:0,suggestedMax:14,position:'left',title:{display:true,text:'Obrót (mld zł)',font:{size:11},color:tc},ticks:{...by.ticks,callback:v=>v+' mld'}},
-        y2:{min:0,suggestedMax:140,position:'right',grid:{display:false},title:{display:true,text:'Wolumen (mln szt.)',font:{size:11},color:tc},ticks:{font:{size:11},color:tc,callback:v=>v+' mln'}}}}
+        y:{...by,min:0,suggestedMax:14,position:'left',title:{display:true,text:T('Obrót (mld zł)'),font:{size:11},color:tc},ticks:{...by.ticks,callback:v=>v+sfx('mld')}},
+        y2:{min:0,suggestedMax:140,position:'right',grid:{display:false},title:{display:true,text:T('Wolumen (mln szt.)'),font:{size:11},color:tc},ticks:{font:{size:11},color:tc,callback:v=>v+sfx('mln')}}}}
   });
 })();
 
@@ -979,13 +1050,13 @@ buildDonut('ecom-dw','ecom-dw-leg',ECOM_D.suma.val.labels,ECOM_D.suma.val.raw,EC
   const cK=[...D.cnpValRaw.y24.map((v,i)=>Math.round(v/D.cnpVolRaw.y24[i])),...D.cnpValRaw.y25.map((v,i)=>Math.round(v/D.cnpVolRaw.y25[i]))];
   const bK=[...D.blikIntValRaw.y24.map((v,i)=>Math.round(v/D.blikIntVolRaw.y24[i])),...D.blikIntValRaw.y25.map((v,i)=>Math.round(v/D.blikIntVolRaw.y25[i]))];
   const aC=[...D.cnpValRaw.y24,...D.cnpValRaw.y25],aB=[...D.blikIntValRaw.y24,...D.blikIntValRaw.y25];
-  new Chart(document.getElementById('e5'),{type:'line',data:{labels:Q8,datasets:[{label:'CNP',data:cK,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:cK.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},{label:'BLIK int.',data:bK,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:bK.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const raw=c.datasetIndex===0?aC[c.dataIndex]:aB[c.dataIndex];return ` ${c.dataset.label}: ${c.parsed.y.toLocaleString('pl-PL')} zł / trans. · ${fmt(raw,'zł')}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' zł'}}}}});
+  new Chart(document.getElementById('e5'),{type:'line',data:{labels:Q8,datasets:[{label:T('CNP'),data:cK,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:cK.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},{label:T('BLIK int.'),data:bK,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:bK.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const raw=c.datasetIndex===0?aC[c.dataIndex]:aB[c.dataIndex];return ` ${c.dataset.label}: ${c.parsed.y.toLocaleString(LOC)}${sfx('zł')} / ${T('trans.')} · ${fmt(raw,'zł')}`;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+sfx('zł')}}}}});
 })();
 (function(){
   const aU=[...D.accUniqRaw.y24,...D.accUniqRaw.y25].map(v=>+(v/1e3).toFixed(1));
   const aP=[...D.accPlacRaw.y24,...D.accPlacRaw.y25].map(v=>+(v/1e3).toFixed(1));
   const rU=[...D.accUniqRaw.y24,...D.accUniqRaw.y25],rP=[...D.accPlacRaw.y24,...D.accPlacRaw.y25];
-  new Chart(document.getElementById('e4'),{type:'line',data:{labels:Q8,datasets:[{label:'Akceptanci',data:aU,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:aU.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},{label:'Placówki',data:aP,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:aP.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const raw=c.datasetIndex===0?rU[c.dataIndex]:rP[c.dataIndex];const ratio=(rP[c.dataIndex]/rU[c.dataIndex]).toFixed(2);const lines=[` ${c.dataset.label}: ${c.parsed.y.toFixed(1)} tys. · ${fmt(raw,'szt.')}`];if(c.datasetIndex===1)lines.push(` placówki/akceptant: ${ratio}`);return lines;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+' tys.'}}}}});
+  new Chart(document.getElementById('e4'),{type:'line',data:{labels:Q8,datasets:[{label:T('Akceptanci'),data:aU,borderColor:C.y24,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:aU.map((_,i)=>i<4?C.y24:C.y25),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24:C.y25},tension:.3},{label:T('Placówki'),data:aP,borderColor:C.y24b,backgroundColor:'transparent',borderWidth:2,pointRadius:3,pointBackgroundColor:aP.map((_,i)=>i<4?C.y24b:C.y25b),segment:{borderColor:ctx=>ctx.p0DataIndex<4?C.y24b:C.y25b},borderDash:[5,3],tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{const raw=c.datasetIndex===0?rU[c.dataIndex]:rP[c.dataIndex];const ratio=(rP[c.dataIndex]/rU[c.dataIndex]).toFixed(2);const lines=[` ${c.dataset.label}: ${dec(c.parsed.y.toFixed(1))}${sfx('tys.')} · ${fmt(raw,'szt.')}`];if(c.datasetIndex===1)lines.push(` ${T('placówki/akceptant')}: ${dec(ratio)}`);return lines;}}}},scales:{x:{...bx},y:{...by,ticks:{...by.ticks,callback:v=>v+sfx('tys.')}}}}});
 })();
 
 
@@ -998,7 +1069,7 @@ buildDonut('ecom-dw','ecom-dw-leg',ECOM_D.suma.val.labels,ECOM_D.suma.val.raw,EC
     type:'bar',
     data:{labels,datasets:[{data,backgroundColor:colors,borderRadius:4,barThickness:22}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toLocaleString('pl-PL')}+ pobrań`}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toLocaleString(LOC)}+ ${T('pobrań')}`}}},
       scales:{
         x:{...bx,grid:{color:gc},ticks:{...bx.ticks,callback:v=>v>=1000?(v/1000)+'k':v}},
         y:{grid:{display:false},ticks:{font:{size:11},color:tc}}
@@ -1011,23 +1082,23 @@ const SOFT_RATINGS={
   android:{labels:['eService tom','PolCard Go','PayTel LightPOS','Planet Pay POSapp','ING eTerminal','Elavon SoftPOS','PepPay'],data:[4.3,3.5,3.4,2.9,2.4,null,null],n:[52,161,17,56,169,0,0]},
   ios:{labels:['Planet Pay POSapp','eService tom'],data:[5.0,4.4],n:[3,24]}
 };
-const ocen=n=>{const t=n%10,s=n%100;return n+' '+(n===1?'ocena':(t>=2&&t<=4&&!(s>=12&&s<=14))?'oceny':'ocen');};
+const ocen=n=>{if(LANG!=='pl')return n+' '+(n===1?'rating':'ratings');const t=n%10,s=n%100;return n+' '+(n===1?'ocena':(t>=2&&t<=4&&!(s>=12&&s<=14))?'oceny':'ocen');};
 function drawSoftRatings(canvasId,d){
   const colors=d.data.map(v=>v===null?'transparent':(v>=4?C.y25b:v>=3?C.y25:'#a32d2d'));
   const mxv=Math.max(...d.data.filter(v=>v!==null));
   const valuePlugin={id:'ratingValue',afterDatasetsDraw(chart){
     const {ctx}=chart;const meta=chart.getDatasetMeta(0);ctx.save();ctx.textAlign='center';ctx.textBaseline='bottom';
     meta.data.forEach((bar,i)=>{const v=d.data[i];
-      if(v===null){ctx.font='400 11px -apple-system,sans-serif';ctx.fillStyle=tc;ctx.fillText('b.d.',bar.x,chart.chartArea.bottom-4);return;}
+      if(v===null){ctx.font='400 11px -apple-system,sans-serif';ctx.fillStyle=tc;ctx.fillText(T('b.d.'),bar.x,chart.chartArea.bottom-4);return;}
       ctx.font=v===mxv?'600 13px -apple-system,sans-serif':'400 12px -apple-system,sans-serif';
       ctx.fillStyle=v===mxv?(dk?'#f0f0ed':'#1a1a18'):tc;
-      ctx.fillText(`${v.toLocaleString('pl-PL',{minimumFractionDigits:1})} ★`,bar.x,bar.y-6);});
+      ctx.fillText(`${v.toLocaleString(LOC,{minimumFractionDigits:1})} ★`,bar.x,bar.y-6);});
     ctx.restore();}};
   new Chart(document.getElementById(canvasId),{type:'bar',
     data:{labels:d.labels,datasets:[{data:d.data,backgroundColor:colors,borderRadius:4,maxBarThickness:32}]},
     plugins:[valuePlugin],
     options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:24}},
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===null?` brak oceny · ${ocen(d.n[c.dataIndex])}`:` ${c.raw.toLocaleString('pl-PL',{minimumFractionDigits:1})} ★ · ${ocen(d.n[c.dataIndex])}`}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===null?` ${T('brak oceny')} · ${ocen(d.n[c.dataIndex])}`:` ${c.raw.toLocaleString(LOC,{minimumFractionDigits:1})} ★ · ${ocen(d.n[c.dataIndex])}`}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:10.5},color:tc,autoSkip:false,maxRotation:45}},
         y:{min:0,max:5,grid:{color:gc},ticks:{...by.ticks,stepSize:1,callback:v=>v+'★'}}}}});
 }
@@ -1054,8 +1125,8 @@ drawSoftRatings('soft-ratings-ios',SOFT_RATINGS.ios);
     }))},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>{
-        if(c.raw===null)return ` ${c.dataset.label}: brak danych`;
-        return ` ${c.dataset.label}: ${c.raw.toLocaleString('pl-PL')} szt.`;
+        if(c.raw===null)return ` ${c.dataset.label}: ${T('brak danych')}`;
+        return ` ${c.dataset.label}: ${c.raw.toLocaleString(LOC)}${sfx('szt.')}`;
       }}}},
       scales:{
         x:{...bx},
@@ -1065,6 +1136,9 @@ drawSoftRatings('soft-ratings-ios',SOFT_RATINGS.ios);
   const leg=document.getElementById('soft-terminals-leg');
   leg.innerHTML=brands.map(b=>`<span class="leg-i"><span class="leg-dot" style="background:${b.color}"></span>${b.name}</span>`).join('');
 })();
+window.setPosDonut=setPosDonut;window.setEcomDonut=setEcomDonut;
+}
+initCharts();
 </script>
 </body>
 </html>
