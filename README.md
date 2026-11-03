@@ -55,7 +55,7 @@ Each tab closes with **product signals**: short takeaways that translate the num
 | **Claude (Anthropic)** | AI assistant for building the code, auditing data against the source and iterating on UI/UX |
 | **HTML / CSS / vanilla JavaScript** | The dashboard itself: a single self-contained file with no build step and no backend |
 | **Chart.js** | Interactive charts |
-| **GitHub Pages** | Hosting |
+| **GitHub** | Hosting |
 
 
 ## Author
