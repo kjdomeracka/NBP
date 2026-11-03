@@ -2,7 +2,7 @@
 
 Interactive dashboard of the Polish payments market, built on National Bank of Poland (NBP) statistics for Q1 2024 – Q4 2025.
 
-**Live demo:** _add your GitHub Pages link here_
+**Live demo:** _kjdomeracka.github.io/NBP/_
 
 ## Problem
 
@@ -39,19 +39,18 @@ Each tab closes with **product signals**: short takeaways that translate the num
 ## Data sources
 
 - [NBP – payment system statistics](https://nbp.pl)
-- [Cashless.pl](https://www.cashless.pl) – SoftPOS terminal counts
-- Google Play / App Store – SoftPOS app ratings and downloads (manually collected)
+- Cashless.pl, Google Play / App Store
 
 ## Tools
 
 | Tool | Used for |
 |---|---|
 | **Google Sheets** | Cleaning and flattening raw NBP tables into one master dataset |
-| **[Claude](https://claude.ai) (Anthropic)** | AI assistant for building the code, auditing data against the source and iterating on UI/UX |
+| **Claude (Anthropic)** | AI assistant for building the code, auditing data against the source and iterating on UI/UX |
 | **HTML / CSS / vanilla JavaScript** | The dashboard itself: a single self-contained file with no build step and no backend |
-| **[Chart.js](https://www.chartjs.org/)** | Interactive charts |
+| **Chart.js** | Interactive charts |
 | **GitHub Pages** | Hosting |
 
 ## Author
 
-Product Manager · FinTech & Payments
+Katarzyna Domeracka · Senior Product Manager
